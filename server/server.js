@@ -18,7 +18,7 @@ const db = require('./config/db');
 
 const app = new Koa();
 const router = new Router();
-app.use(serve('./index.html'));
+app.use(serve('./'));
 app.use(logger());
 app.use(bodyParser());
 
@@ -29,8 +29,18 @@ const server = app.listen(3000);// запускаем сервер на порт
 mongoose.Promise = Promise; // Просим Mongoose использовать стандартные Промисы
 mongoose.set('debug', true);  // Просим Mongoose писать все запросы к базе в консоль. Удобно для отладки кода
 mongoose.connect(db.url, { useMongoClient: true });
+
+
+
+var promise = mongoose.createConnection(db.url, { useMongoClient: true });
+
+
+promise.then(function(db) {
+  console.log("hello i'm here");
+});
 mongoose.connection.on('error', console.error);
 
+debugger;
 
 //---------Схема и модель пользователя------------------//
 
@@ -58,7 +68,6 @@ userSchema.virtual('password')
     this.passwordHash = undefined;
   }
 })
-
 .get(function () {
   return this._plainPassword;
 });

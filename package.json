@@ -9,9 +9,14 @@
     "dev": "nodemon server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/burn1ng/webix-app.git"
+  },
   "keywords": [
     "webix"
   ],
+  "license": "ISC",
   "devDependencies": {
     "event-stream": "^3.3.1",
     "glob": "^5.0.13",

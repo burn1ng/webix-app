@@ -17,7 +17,7 @@ define([
 		name:       "English App!",
 		version:    "0.1.0",
 		debug:      true,
-		start:      "/top/start"
+		start:      "/sign-in"
 	});
 
 	app.use(menu);

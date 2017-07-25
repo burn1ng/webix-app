@@ -8,8 +8,19 @@ define([
 
 	return {
 		$ui: ui,
-		$oninit:function(view){
+		$oninit:function(view, $scope){
+			var popup = $scope.ui({
+                view: "popup",
+                position: "center",
+                body: "Data is updated"
+            });
+
+            $scope.on(records.data, "onDataUpdate", function() {
+                popup.show();
+            });
+            
 			view.parse(records.data);
+
 		}
 	};
 	
