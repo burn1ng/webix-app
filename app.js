@@ -13,7 +13,7 @@ define([
     name: 'English App!',
     version: '0.1.0',
     debug: true,
-    start: '/sign-in'
+    start: '/login'
   })
   app.use(menu)
   app.use(theme)
