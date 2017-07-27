@@ -36,10 +36,6 @@ promise.then(function (db) {
   console.log("hello i'm here")
 })
 mongoose.connection.on('error', console.error)
-
-/* eslint-disable no-debugger */
-debugger
-
 // ---------Схема и модель пользователя------------------//
 
 const userSchema = new mongoose.Schema({
@@ -73,7 +69,7 @@ userSchema.virtual('password')
 userSchema.methods.checkPassword = function (password) {
   if (!password) return false
   if (!this.passwordHash) return false
-  return crypto.pbkdf2Sync(password, this.salt, 1, 128, 'sha1') === this.passwordHash
+  return crypto.pbkdf2Sync(password, this.salt, 1, 128, 'sha1') == this.passwordHash
 }
 
 const User = mongoose.model('User', userSchema)
@@ -138,8 +134,11 @@ router.post('/user', async(ctx, next) => {
 // маршрут для локальной авторизации и создания JWT при успешной авторизации
 
 router.post('/login', async(ctx, next) => {
-  await passport.authenticate('local', function (user, err) {
-    if (user === false) {
+  await passport.authenticate('local', function (err, user) {
+    if (err) {
+      console.log(err.stack)
+    }
+    if (user == false) {
       ctx.body = 'Login failed'
     } else {
       // --payload - информация которую мы храним в токене и можем из него получать

@@ -1,10 +1,10 @@
 define([], function () {
-  var views = [ {
-    value: 'Personal',
-    id: 'personal',
-    href: '#!/app/settings/personal',
-    icon: 'home'
-  } ]
+  var views = [
+    { value: 'Personal',
+      id: 'personal',
+      href: '#!/app/settings/personal',
+      icon: 'home' }
+  ]
 
   var menu = {
     view: 'tabbar',
@@ -18,7 +18,8 @@ define([], function () {
 
   var ui = {
     rows: [
-      menu, { $subview: true }
+      menu,
+      { $subview: true }
     ]
   }
 

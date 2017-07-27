@@ -4,8 +4,8 @@ define([
   'libs/webix-jet-core/plugins/theme'
 ], function (app, locales, themes) {
   var languages = [
-{ id: 'ru', value: 'Russian' },
-{ id: 'en', value: 'English' }
+    { id: 'ru', value: 'Russian' },
+    { id: 'en', value: 'English' }
   ]
   var langUi = { view: 'segmented',
     name: 'language',
@@ -16,8 +16,8 @@ define([
   }
 
   var themenames = [
-{ id: 'siberia:webix', value: 'Siberia' },
-{ id: 'siberia:skins/compact', value: 'Compact' }
+    { id: 'siberia:webix', value: 'Siberia' },
+    { id: 'siberia:skins/compact', value: 'Compact' }
   ]
   var skinsUi = { view: 'segmented',
     name: 'theme',
@@ -28,8 +28,12 @@ define([
   }
 
   var personal = { view: 'form',
-    rows: [ {type: 'section', template: 'App settings'}, langUi, skinsUi, {} ]
-  }
+    rows: [
+      { type: 'section', template: 'App settings' },
+      langUi,
+      skinsUi,
+      {}
+    ]}
 
   var view = {
     $ui: personal,

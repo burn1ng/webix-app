@@ -41,7 +41,6 @@ define([
       {
         id: 'hui',
         view: 'template'
-
       }
       ]
     }
