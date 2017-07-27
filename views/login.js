@@ -1,14 +1,13 @@
-define([
-  'models/formData'
-], function (formData) {
+define([], function (formData) {
   var ui = {
     rows: [
-    { template: 'Hello to XB Software!', type: 'header' },
+    { template: 'Welcome to English App!', type: 'header' },
     {},
       {cols: [
       {},
         {
           view: 'form',
+          maxWidth: 300,
           id: 'log_form',
           elements: [
             { view: 'fieldset',
@@ -22,31 +21,39 @@ define([
             {
               margin: 5,
               cols: [
-                    { view: 'button', value: 'Login', type: 'form' },
+                    { view: 'button', value: 'Login', type: 'form', id: 'loginButton' },
                     { view: 'button', value: 'Cancel' }
               ]
             }
-          ]
+          ],
+          rules: {
+            'email': webix.rules.isEmail,
+            'login': webix.rules.isNotEmpty
+          }
         },
       {}
       ]},
     {}
     ]
   }
+
   return {
     $ui: ui,
     $oninit: function (view, $scope) {
-      var popup = $scope.ui({
-        view: 'popup',
-        position: 'center',
-        body: 'Welcome to dashboard'
+      var myForm = $$('log_form')
+
+      $$('loginButton').attachEvent('onItemClick', function () {
+        // webix.ajax().post('/login', values, function (text, data, xhr) {
+        //   console.log('text: ' + text)
+        //   console.log('data: ' + data.toString())
+        //   console.log('xhr: ' + xhr.toString())
+        // })
+        webix.send('/login', myForm.getValues())
       })
 
-      $scope.on(formData.data, 'onDataUpdate', function () {
-        popup.show()
+      myForm.elements['email'].attachEvent('onChange', function (newv, oldv) {
+        webix.message('Value changed from: ' + oldv + ' to: ' + newv)
       })
-
-      view.parse(formData.data)
     }
   }
 })
