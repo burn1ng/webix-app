@@ -3,7 +3,13 @@
         "browser": true,
         "commonjs": true,
         "es6": true,
-        "node": true
+        "node": true,
+        "amd": true
+    },
+    "globals": {
+        "define": true,
+        "webix": true,
+        "$$": true
     },
     "parserOptions": {
         "ecmaFeatures": {
@@ -17,8 +23,10 @@
         "no-undef": "warn",
         "no-unreachable": "warn",
         "no-unused-vars": "warn",
+        "no-extra-parens": "warn",
         "constructor-super": "warn",
-        "valid-typeof": "warn"
+        "valid-typeof": "warn",
+        "valid-jsdoc": "warn"
     },
     "extends": "./node_modules/eslint-xbsoftware/2__single_quotes_and_spaces/.eslintrc"
 }

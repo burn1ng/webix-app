@@ -1,24 +1,24 @@
 define([
-  'models/records'
-], function (records) {
-  var ui = {
-    view: 'datatable', autoConfig: true
-  }
+    'models/records'
+], (records) => {
+    let ui = {
+        view: 'datatable', autoConfig: true
+    };
 
-  return {
-    $ui: ui,
-    $oninit: function (view, $scope) {
-      var popup = $scope.ui({
-        view: 'popup',
-        position: 'center',
-        body: 'Data is updated'
-      })
+    return {
+        $ui: ui,
+        $oninit(view, $scope) {
+            let popup = $scope.ui({
+                view: 'popup',
+                position: 'center',
+                body: 'Data is updated'
+            });
 
-      $scope.on(records.data, 'onDataUpdate', function () {
-        popup.show()
-      })
+            $scope.on(records.data, 'onDataUpdate', () => {
+                popup.show();
+            });
 
-      view.parse(records.data)
-    }
-  }
-})
+            view.parse(records.data);
+        }
+    };
+});

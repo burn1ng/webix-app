@@ -18,6 +18,8 @@
   ],
   "license": "ISC",
   "devDependencies": {
+    "bower": "^1.8.0",
+    "editorconfig": "^0.13.2",
     "eslint": "^4.3.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-xbsoftware": "git+https://bitbucket.org/xbsltd/eslint.git",

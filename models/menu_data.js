@@ -1,22 +1,22 @@
-define([], function () {
-  var menuData = [
-    {id: 'dashboard',
-      icon: 'dashboard',
-      value: 'Dashboards',
-      data: [
-        {id: 'dashboard1', value: 'Dashboard 1'},
-        {id: 'dashboard2', value: 'Dashboard 2'}
-      ]},
-    {id: 'layouts',
-      icon: 'columns',
-      value: 'Layouts',
-      data: [
-        {id: 'accrodions', value: 'Accordions'},
-        {id: 'portlets', value: 'Portlets'}
-      ]}
-  ]
+define([], () => {
+    let menuData = [
+        {id: 'dashboard',
+            icon: 'dashboard',
+            value: 'Dashboards',
+            data: [
+                {id: 'dashboard1', value: 'Dashboard 1'},
+                {id: 'dashboard2', value: 'Dashboard 2'}
+            ]},
+        {id: 'layouts',
+            icon: 'columns',
+            value: 'Layouts',
+            data: [
+                {id: 'accrodions', value: 'Accordions'},
+                {id: 'portlets', value: 'Portlets'}
+            ]}
+    ];
 
-  return {
-    data: menuData
-  }
-})
+    return {
+        data: menuData
+    };
+});
