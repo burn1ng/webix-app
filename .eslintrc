@@ -17,6 +17,7 @@
         },
         "sourceType": "module"
     },
+    "extends": "./node_modules/eslint-xbsoftware/2__single_quotes_and_spaces/.eslintrc",
     "rules": {
         "no-const-assign": "warn",
         "no-this-before-super": "warn",
@@ -26,7 +27,7 @@
         "no-extra-parens": "warn",
         "constructor-super": "warn",
         "valid-typeof": "warn",
-        "valid-jsdoc": "warn"
-    },
-    "extends": "./node_modules/eslint-xbsoftware/2__single_quotes_and_spaces/.eslintrc"
+        "valid-jsdoc": "warn",
+        "import/no-amd": 0
+    }
 }

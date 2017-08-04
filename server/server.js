@@ -30,12 +30,6 @@ mongoose.Promise = Promise; // Просим Mongoose использовать с
 mongoose.set('debug', true); // Просим Mongoose писать все запросы к базе в консоль. Удобно для отладки кода
 mongoose.connect(db.url, {useMongoClient: true});
 
-// let promise = mongoose.createConnection(db.url, {useMongoClient: true});
-
-// promise.then((db) => {
-//     console.log("hello i'm here");
-// });
-
 mongoose.connection.on('error', console.error);
 // ---------Схема и модель пользователя------------------//
 
@@ -44,7 +38,7 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: 'Укажите e-mail',
-        unique: 'Такой e-mail уже существует'
+        unique: true
     },
     passwordHash: String,
     salt: String
@@ -71,10 +65,32 @@ userSchema.virtual('password')
 userSchema.methods.checkPassword = function (password) {
     if (!password) return false;
     if (!this.passwordHash) return false;
-    return crypto.pbkdf2Sync(password, this.salt, 1, 128, 'sha1') == this.passwordHash;
+    return crypto.pbkdf2Sync(password, this.salt, 1, 128, 'sha1').toString() === this.passwordHash;
 };
 
 const User = mongoose.model('User', userSchema);
+
+// ---------Schema and model of Word ------------------//
+
+const wordSchema = new mongoose.Schema({
+    originalWord: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    translationWord: {
+        type: String,
+        required: true
+    },
+    typeOfSpeech: {
+        type: String,
+        required: true
+    }
+}, {
+    timestamps: true
+});
+
+const Word = mongoose.model('Word', wordSchema);
 
 // ----------Passport Local Strategy--------------//
 
@@ -83,18 +99,17 @@ passport.use(new LocalStrategy({
     passwordField: 'password',
     session: false
 },
-    ((email, password, done) => {
-        User.findOne({email}, (err, user) => {
-            if (err) {
-                return done(err);
-            }
-
-            if (!user || !user.checkPassword(password)) {
-                return done(null, false, {message: 'Нет такого пользователя или пароль неверен.'});
-            }
-            return done(null, user);
-        });
-    })
+(email, password, done) => {
+    User.findOne({email}, (err, user) => {
+        if (err) {
+            return done(err);
+        }
+        if (!user || !user.checkPassword(password)) {
+            return done(null, false, {message: 'Нет такого пользователя или пароль неверен.'});
+        }
+        return done(null, user);
+    });
+}
 )
 );
 
@@ -106,19 +121,17 @@ const jwtOptions = {
     secretOrKey: jwtsecret
 };
 
-passport.use(new JwtStrategy(jwtOptions, ((payload, done) => {
+passport.use(new JwtStrategy(jwtOptions, (payload, done) => {
     User.findById(payload.id, (err, user) => {
-        if (err) {
-            return done(err);
-        }
         if (user) {
             done(null, user);
         }
         else {
             done(null, false);
         }
+        return err ? 'ok' : done(err);
     });
-}))
+})
 );
 
 // ------------Routing---------------//
@@ -142,7 +155,8 @@ router.post('/login', async (ctx, next) => {
         if (err) {
             console.log(err.stack);
         }
-        if (user == false) {
+        if (user === false) {
+            ctx.status = 401;
             ctx.body = 'Login failed';
         }
         else {
@@ -154,7 +168,8 @@ router.post('/login', async (ctx, next) => {
             };
             const token = jwt.sign(payload, jwtsecret); // здесь создается JWT
 
-            ctx.body = {user: user.displayName, token: `JWT ${token}`};
+            ctx.status = 200;
+            ctx.body = {user: user.displayName, token: `Bearer ${token}`, expiresIn: 3600};
         }
     })(ctx, next);
 });
@@ -168,7 +183,28 @@ router.get('/custom', async (ctx, next) => {
         }
         else {
             ctx.body = 'No such user';
-            console.log('err', err);
+            log.error('err', err);
         }
     })(ctx, next);
+});
+
+
+router.get('/getWords', async (ctx) => {
+    try {
+        ctx.body = await Word.find({});
+    }
+    catch (err) {
+        ctx.status = 400;
+        ctx.body = 'Sorry, no words here in our database =(';
+    }
+});
+
+router.post('/addWord', async (ctx) => {
+    try {
+        ctx.body = await Word.create(ctx.request.body);
+    }
+    catch (err) {
+        ctx.status = 400;
+        ctx.body = err;
+    }
 });
