@@ -47,7 +47,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.virtual('password')
-    .set(function (password) {
+    .set((password) => {
         this._plainPassword = password;
         if (password) {
             this.salt = crypto.randomBytes(128).toString('base64');
@@ -58,11 +58,9 @@ userSchema.virtual('password')
             this.passwordHash = undefined;
         }
     })
-    .get(function () {
-        return this._plainPassword;
-    });
+    .get(() => this._plainPassword);
 
-userSchema.methods.checkPassword = function (password) {
+userSchema.methods.checkPassword = (password) => {
     if (!password) return false;
     if (!this.passwordHash) return false;
     return crypto.pbkdf2Sync(password, this.salt, 1, 128, 'sha1').toString() === this.passwordHash;
@@ -76,15 +74,19 @@ const wordSchema = new mongoose.Schema({
     originalWord: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        maxlength: 45
     },
     translationWord: {
         type: String,
-        required: true
+        required: true,
+        maxlength: 150
     },
-    typeOfSpeech: {
-        type: String,
-        required: true
+    partOfSpeech: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 7
     }
 }, {
     timestamps: true
@@ -125,9 +127,11 @@ passport.use(new JwtStrategy(jwtOptions, (payload, done) => {
     User.findById(payload.id, (err, user) => {
         if (user) {
             done(null, user);
+            console.log('all is ok');
         }
         else {
             done(null, false);
+            console.log('oh my god!');
         }
         return err ? 'ok' : done(err);
     });
@@ -138,7 +142,7 @@ passport.use(new JwtStrategy(jwtOptions, (payload, done) => {
 
 // маршрут для создания нового пользователя
 
-router.post('/user', async (ctx, next) => {
+router.post('/user', async (ctx) => {
     try {
         ctx.body = await User.create(ctx.request.body);
     }
@@ -169,7 +173,7 @@ router.post('/login', async (ctx, next) => {
             const token = jwt.sign(payload, jwtsecret); // здесь создается JWT
 
             ctx.status = 200;
-            ctx.body = {user: user.displayName, token: `Bearer ${token}`, expiresIn: 3600};
+            ctx.body = {user: user.displayName, token: `Bearer ${token}`};
         }
     })(ctx, next);
 });
@@ -183,7 +187,7 @@ router.get('/custom', async (ctx, next) => {
         }
         else {
             ctx.body = 'No such user';
-            log.error('err', err);
+            console.log('err', err);
         }
     })(ctx, next);
 });
@@ -207,4 +211,58 @@ router.post('/addWord', async (ctx) => {
         ctx.status = 400;
         ctx.body = err;
     }
+});
+
+router.put('/addWord/:id', async (ctx) => {
+    // Word.findById(ctx.request.body._id, (err, word) => {
+    //     // Handle any possible database errors
+    //     if (err) {
+    //         ctx.status = 500;
+    //         ctx.body = 'I cannot find this record in database';
+    //     }
+    //     else {
+    //         word.originalWord = ctx.request.body.originalWord || word.originalWord;
+    //         word.translationWord = ctx.request.body.translationWord || word.translationWord;
+    //         word.partOfSpeech = ctx.request.body.partOfSpeech || word.partOfSpeech;
+
+    //         // Save the updated document back to the database
+    //         word.save((saveError, updatedWord) => {
+    //             if (saveError) {
+    //                 ctx.status = 500;
+    //                 ctx.body = 'I cannot find this record in database';
+    //             }
+    //             ctx.body = updatedWord;
+    //         });
+    //     }
+    // });
+
+
+    await Word.findByIdAndUpdate(ctx.request.body._id, {
+        $set: {
+            originalWord: ctx.request.body.originalWord,
+            translationWord: ctx.request.body.translationWord,
+            partOfSpeech: ctx.request.body.partOfSpeech
+        }
+    },
+    {new: true},
+    (err, word) => {
+        console.log(err);
+        console.log(word);
+        ctx.response.body = word;
+    });
+
+
+    // const bd_id = req.body._id;
+
+    // const details = {_id: new ObjectID(bd_id)};
+    // const note = {text: req.body.text, title: req.body.title};
+
+    // db.collection('notes').update(details, note, (err, result) => {
+    //     if (err) {
+    //         res.send({error: 'An error has occurred'});
+    //     }
+    //     else {
+    //         res.send(note);
+    //     }
+    // });
 });

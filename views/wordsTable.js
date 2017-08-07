@@ -2,7 +2,7 @@ define([
     'models/words'
 ], (words) => {
     function addRow() {
-        $$('gridDatatable').add({name: 'New item'});
+        $$('gridDatatable').add({originalWord: 'New word', translationWord: 'Translation', partOfSpeech: 'Part of speech'});
     }
     function deleteRow() {
         $$('gridDatatable').remove($$('gridDatatable').getSelectedId(true));
@@ -20,23 +20,51 @@ define([
 
     let grid = {
         id: 'gridDatatable',
-        // url: '/getWords',
         view: 'datatable',
-        select: 'row',
-        // autoConfig: true
+        editable: true,
+        editaction: 'custom',
         resizeColumn: true,
         resizeRow: true,
+        on: {
+            onItemClick(id) {
+                this.editRow(id);
+            }
+        },
         columns: [
-            // {id: 'id', fillspace: 2, header: 'Id', sort: 'int'},
-            {id: 'originalWord', fillspace: 2, editor: 'text', header: ['Original', {content: 'selectFilter'}]},
-            {id: 'translationWord', fillspace: 2, editor: 'text', header: ['Translation', {content: 'textFilter'}]},
-            {id: 'typeOfSpeech', fillspace: 1, editor: 'text', header: ['Type of speech', {content: 'selectFilter'}]}
-            // {id: 'name', header: 'Name', editor: 'text', fillspace: 1},
-            // {id: 'year', editor: 'text'},
-            // {id: 'status', editor: 'select', options: ['', 'Active', 'Closed']}
-        ],
-        editable: true,
-        editaction: 'dblclick'
+            {id: 'originalWord', fillspace: 2, editor: 'text', header: ['Original word', {content: 'textFilter'}]},
+            {id: 'translationWord', fillspace: 3, editor: 'text', header: ['Translation', {content: 'textFilter'}]},
+            {
+                id: 'partOfSpeech',
+                fillspace: 1,
+                editor: 'select',
+                options: [
+                    {id: 1, value: 'Verb'},
+                    {id: 2, value: 'Noun'},
+                    {id: 3, value: 'Adjective'},
+                    {id: 4, value: 'Adverb'},
+                    {id: 5, value: 'Pronoun'},
+                    {id: 6, value: 'Preposition'},
+                    {id: 7, value: 'Conjunction'},
+                    {id: 8, value: 'Interjection'}
+                ],
+                header: ['Part of speech',
+                    {
+                        content: 'selectFilter',
+                        options: [// need to set same options for non-alphabetical select order
+                            {id: 0, value: ''},
+                            {id: 1, value: 'Verb'},
+                            {id: 2, value: 'Noun'},
+                            {id: 3, value: 'Adjective'},
+                            {id: 4, value: 'Adverb'},
+                            {id: 5, value: 'Pronoun'},
+                            {id: 6, value: 'Preposition'},
+                            {id: 7, value: 'Conjunction'},
+                            {id: 8, value: 'Interjection'}
+                        ]
+                    }
+                ]
+            }
+        ]
     };
 
 
@@ -53,7 +81,7 @@ define([
             let popup = $scope.ui({
                 view: 'popup',
                 position: 'center',
-                body: 'Data is updated'
+                body: 'New word added to your vocabulary and saved.'
             });
 
             $scope.on(words.arrayOfWords, 'onDataUpdate', () => {

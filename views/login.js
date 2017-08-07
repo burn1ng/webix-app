@@ -43,7 +43,7 @@ define([
     return {
         $ui: ui,
         $oninit: () => {
-            let loginForm = $$('log_form');
+            const loginForm = $$('log_form');
             loginForm.elements.email.attachEvent('onChange', (newv, oldv) => {
                 webix.message(`Value changed from: ${oldv} to: ${newv}`);
             });
@@ -54,7 +54,13 @@ define([
                         webix.message(`Wooops. Looks like a error: ${xhr.response}`);
                     },
                     success(text, data, xhr) {
-                        window.sessionStorage.token = JSON.parse(xhr.response).token;
+                        let receivedToken = JSON.parse(xhr.response).token;
+                        let localToken = localStorage.getItem('token');
+
+                        if (!localToken) {
+                            localStorage.setItem('token', receivedToken);
+                        }
+
                         app.show('/top/wordsTable');
                         console.log(xhr);
                     }
