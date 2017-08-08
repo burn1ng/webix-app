@@ -84,9 +84,7 @@ const wordSchema = new mongoose.Schema({
     },
     partOfSpeech: {
         type: Number,
-        required: true,
-        min: 0,
-        max: 7
+        required: true
     }
 }, {
     timestamps: true
@@ -138,7 +136,7 @@ passport.use(new JwtStrategy(jwtOptions, (payload, done) => {
 })
 );
 
-// ------------Routing---------------//
+// ------------Routing for users---------------//
 
 // маршрут для создания нового пользователя
 
@@ -147,21 +145,17 @@ router.post('/user', async (ctx) => {
         ctx.body = await User.create(ctx.request.body);
     }
     catch (err) {
-        ctx.status = 400;
-        ctx.body = err;
+        ctx.throw(400, 'User creation is failed', {err});
     }
 });
-
-// маршрут для локальной авторизации и создания JWT при успешной авторизации
 
 router.post('/login', async (ctx, next) => {
     await passport.authenticate('local', (err, user) => {
         if (err) {
-            console.log(err.stack);
+            ctx.throw(500, 'Auth failed on server', {user});
         }
         if (user === false) {
-            ctx.status = 401;
-            ctx.body = 'Login failed';
+            ctx.throw(401, 'Login failed', {user});
         }
         else {
             // --payload - информация которую мы храним в токене и можем из него получать
@@ -178,91 +172,50 @@ router.post('/login', async (ctx, next) => {
     })(ctx, next);
 });
 
-// маршрут для авторизации по токену
-
 router.get('/custom', async (ctx, next) => {
     await passport.authenticate('jwt', (err, user) => {
         if (user) {
             ctx.body = `hello ${user.displayName}`;
         }
         else {
-            ctx.body = 'No such user';
-            console.log('err', err);
+            ctx.throw(401, 'No such user', {err});
         }
     })(ctx, next);
 });
 
+// ------------Routing for words---------------//
 
+// read route for all words
 router.get('/getWords', async (ctx) => {
     try {
         ctx.body = await Word.find({});
     }
     catch (err) {
-        ctx.status = 400;
-        ctx.body = 'Sorry, no words here in our database =(';
+        ctx.throw(500, 'Sorry, can\'t find words in database', {err});
     }
 });
 
-router.post('/addWord', async (ctx) => {
+router.post('/word', async (ctx) => {
     try {
         ctx.body = await Word.create(ctx.request.body);
     }
     catch (err) {
-        ctx.status = 400;
-        ctx.body = err;
+        ctx.throw(401, 'Problem with adding word in database', {err});
     }
 });
 
-router.put('/addWord/:id', async (ctx) => {
-    // Word.findById(ctx.request.body._id, (err, word) => {
-    //     // Handle any possible database errors
-    //     if (err) {
-    //         ctx.status = 500;
-    //         ctx.body = 'I cannot find this record in database';
-    //     }
-    //     else {
-    //         word.originalWord = ctx.request.body.originalWord || word.originalWord;
-    //         word.translationWord = ctx.request.body.translationWord || word.translationWord;
-    //         word.partOfSpeech = ctx.request.body.partOfSpeech || word.partOfSpeech;
+router.put('/word/:id', async (ctx) => {
+    console.log(ctx);
+    ctx.body = await Word.findById(ctx.request.body._id, (err, word) => {
+        if (err) ctx.throw(500, 'can\'t find required record in database:', {err});
 
-    //         // Save the updated document back to the database
-    //         word.save((saveError, updatedWord) => {
-    //             if (saveError) {
-    //                 ctx.status = 500;
-    //                 ctx.body = 'I cannot find this record in database';
-    //             }
-    //             ctx.body = updatedWord;
-    //         });
-    //     }
-    // });
+        word.originalWord = ctx.request.body.originalWord;
+        word.translationWord = ctx.request.body.originalWord;
+        word.partOfSpeech = ctx.request.body.partOfSpeech;
 
-
-    await Word.findByIdAndUpdate(ctx.request.body._id, {
-        $set: {
-            originalWord: ctx.request.body.originalWord,
-            translationWord: ctx.request.body.translationWord,
-            partOfSpeech: ctx.request.body.partOfSpeech
-        }
-    },
-    {new: true},
-    (err, word) => {
-        console.log(err);
-        console.log(word);
-        ctx.response.body = word;
+        word.save((saveErr, updatedWord) => {
+            if (saveErr) ctx.throw(500, 'can\'t save Word in database: ', {err});
+            return updatedWord;
+        });
     });
-
-
-    // const bd_id = req.body._id;
-
-    // const details = {_id: new ObjectID(bd_id)};
-    // const note = {text: req.body.text, title: req.body.title};
-
-    // db.collection('notes').update(details, note, (err, result) => {
-    //     if (err) {
-    //         res.send({error: 'An error has occurred'});
-    //     }
-    //     else {
-    //         res.send(note);
-    //     }
-    // });
 });

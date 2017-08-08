@@ -2,7 +2,7 @@ define([
     'models/words'
 ], (words) => {
     function addRow() {
-        $$('gridDatatable').add({originalWord: 'New word', translationWord: 'Translation', partOfSpeech: 'Part of speech'});
+        $$('gridDatatable').add({originalWord: 'New word', translationWord: 'Translation', partOfSpeech: '0'});
     }
     function deleteRow() {
         $$('gridDatatable').remove($$('gridDatatable').getSelectedId(true));
