@@ -15,7 +15,7 @@ define([
         template: "<span class='webix_icon fa-#icon#'></span> #value# ",
         data: [
             {value: 'DashBoard', id: 'start', href: '#!/top/start', icon: 'envelope-o'},
-            {value: 'Data', id: 'data', href: '#!/top/data', icon: 'briefcase'},
+            {value: 'Data', id: 'data', href: '#!/top/wordsTable', icon: 'briefcase'},
             {value: 'Settings', id: 'settings', href: '#!/top/settings/personal', icon: 'cog'}
         ]
     };

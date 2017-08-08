@@ -37,7 +37,14 @@ define([
                 id: 'partOfSpeech',
                 fillspace: 1,
                 editor: 'select',
-                options: [
+                header: ['Part of speech',
+                    {
+                        content: 'selectFilter',
+                        sort: 'string',
+                        empty: true
+                    }
+                ],
+                collection: [
                     {id: 1, value: 'Verb'},
                     {id: 2, value: 'Noun'},
                     {id: 3, value: 'Adjective'},
@@ -46,22 +53,6 @@ define([
                     {id: 6, value: 'Preposition'},
                     {id: 7, value: 'Conjunction'},
                     {id: 8, value: 'Interjection'}
-                ],
-                header: ['Part of speech',
-                    {
-                        content: 'selectFilter',
-                        options: [// need to set same options for non-alphabetical select order
-                            {id: 0, value: ''},
-                            {id: 1, value: 'Verb'},
-                            {id: 2, value: 'Noun'},
-                            {id: 3, value: 'Adjective'},
-                            {id: 4, value: 'Adverb'},
-                            {id: 5, value: 'Pronoun'},
-                            {id: 6, value: 'Preposition'},
-                            {id: 7, value: 'Conjunction'},
-                            {id: 8, value: 'Interjection'}
-                        ]
-                    }
                 ]
             }
         ]

@@ -47,7 +47,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.virtual('password')
-    .set((password) => {
+    .set(function (password) {
         this._plainPassword = password;
         if (password) {
             this.salt = crypto.randomBytes(128).toString('base64');
@@ -58,12 +58,15 @@ userSchema.virtual('password')
             this.passwordHash = undefined;
         }
     })
-    .get(() => this._plainPassword);
 
-userSchema.methods.checkPassword = (password) => {
+    .get(function () {
+        return this._plainPassword;
+    });
+
+userSchema.methods.checkPassword = function (password) {
     if (!password) return false;
     if (!this.passwordHash) return false;
-    return crypto.pbkdf2Sync(password, this.salt, 1, 128, 'sha1').toString() === this.passwordHash;
+    return crypto.pbkdf2Sync(password, this.salt, 1, 128, 'sha1') == this.passwordHash;
 };
 
 const User = mongoose.model('User', userSchema);
@@ -104,6 +107,7 @@ passport.use(new LocalStrategy({
         if (err) {
             return done(err);
         }
+
         if (!user || !user.checkPassword(password)) {
             return done(null, false, {message: 'Нет такого пользователя или пароль неверен.'});
         }
@@ -123,15 +127,15 @@ const jwtOptions = {
 
 passport.use(new JwtStrategy(jwtOptions, (payload, done) => {
     User.findById(payload.id, (err, user) => {
+        if (err) {
+            return done(err);
+        }
         if (user) {
             done(null, user);
-            console.log('all is ok');
         }
         else {
             done(null, false);
-            console.log('oh my god!');
         }
-        return err ? 'ok' : done(err);
     });
 })
 );
@@ -152,10 +156,11 @@ router.post('/user', async (ctx) => {
 router.post('/login', async (ctx, next) => {
     await passport.authenticate('local', (err, user) => {
         if (err) {
-            ctx.throw(500, 'Auth failed on server', {user});
+            ctx.body = 'Error login route';
         }
-        if (user === false) {
-            ctx.throw(401, 'Login failed', {user});
+        if (user == false) {
+            ctx.status = 401;
+            ctx.body = 'Login failed';
         }
         else {
             // --payload - информация которую мы храним в токене и можем из него получать
@@ -167,7 +172,7 @@ router.post('/login', async (ctx, next) => {
             const token = jwt.sign(payload, jwtsecret); // здесь создается JWT
 
             ctx.status = 200;
-            ctx.body = {user: user.displayName, token: `Bearer ${token}`};
+            ctx.body = {user: user.displayName, token: `JWT ${token}`};
         }
     })(ctx, next);
 });
@@ -178,10 +183,22 @@ router.get('/custom', async (ctx, next) => {
             ctx.body = `hello ${user.displayName}`;
         }
         else {
-            ctx.throw(401, 'No such user', {err});
+            ctx.status = 401;
+            ctx.body = 'access denied, please log in again or register';
         }
     })(ctx, next);
 });
+
+// router.all('*', async (ctx, next) => {
+//     await passport.authenticate('jwt', (err, user, info) => {
+//         if (err) return next(err);
+//         if (user) {
+//             ctx.body = `hello ${user.displayName}`;
+//             return next();
+//         }
+//         ctx.status = 401;
+//     })(ctx, next);
+// });
 
 // ------------Routing for words---------------//
 
@@ -205,17 +222,32 @@ router.post('/word', async (ctx) => {
 });
 
 router.put('/word/:id', async (ctx) => {
-    console.log(ctx);
-    ctx.body = await Word.findById(ctx.request.body._id, (err, word) => {
-        if (err) ctx.throw(500, 'can\'t find required record in database:', {err});
+    ctx.body = await Word.findByIdAndUpdate(ctx.request.body._id, {
+        $set: {
+            originalWord: ctx.request.body.originalWord,
+            translationWord: ctx.request.body.translationWord,
+            partOfSpeech: ctx.request.body.partOfSpeech
+        }
+    },
+    {new: true},
+    (err, rawResponse) =>
+        // console.log(rawResponse);
+        rawResponse
+    );
 
-        word.originalWord = ctx.request.body.originalWord;
-        word.translationWord = ctx.request.body.originalWord;
-        word.partOfSpeech = ctx.request.body.partOfSpeech;
+    // ctx.body = await Word.findById(ctx.request.body._id, (err, word) => {
+    //     if (err) ctx.throw(500, 'can\'t find required record in database:', {err});
 
-        word.save((saveErr, updatedWord) => {
-            if (saveErr) ctx.throw(500, 'can\'t save Word in database: ', {err});
-            return updatedWord;
-        });
-    });
+    //     console.log(word);
+    //     word.originalWord = ctx.request.body.originalWord;
+    //     word.translationWord = ctx.request.body.translationWord;
+    //     word.partOfSpeech = ctx.request.body.partOfSpeech;
+    //     console.log(word);
+
+    //     word.save((saveErr, updatedWord) => {
+    //         if (saveErr) ctx.throw(500, 'can\'t save Word in database: ', {err});
+    //         return updatedWord;
+    //     });
+    // });
+    // console.log(ctx.response.body);
 });
