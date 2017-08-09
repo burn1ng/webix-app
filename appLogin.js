@@ -17,9 +17,6 @@ define([
     });
 
     webix.attachEvent('onBeforeAjax', (mode, url, data, request, headers) => {
-        // if (!localStorage.getItem('token')) {
-        //     app.show('/login');
-        // }
         headers.Authorization = localStorage.getItem('token');
         console.log(headers);
     });
