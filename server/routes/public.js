@@ -1,16 +1,10 @@
+const controllers = require('../controllers');
+
 module.exports = (router) => {
-    router.get('/', async (ctx) => {
-        try {
-            ctx.body = 'мы перенаправились!';
-            // TODO REDIRECT TO ADMIN route
-        }
-        catch (err) {
-            ctx.throw(500, 'failed', {err});
-        }
+    router.all('/', (ctx) => {
+        ctx.redirect('/admin');
+        ctx.status = 302;
     });
 
-
-    router.get('/guest/', async (ctx, next) => {
-        // todo return page login.html to user
-    });
+    router.get('/public', controllers.user.sendLoginPage);
 };

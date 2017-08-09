@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto'); // for executing crypting operations and creation of password hash
 
 const userSchema = new mongoose.Schema({
     displayName: String,
@@ -15,6 +16,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.virtual('password')
     .set(function (password) {
+        // no arrow function, because we use [this]
         this._plainPassword = password;
         if (password) {
             this.salt = crypto.randomBytes(128).toString('base64');
@@ -27,10 +29,12 @@ userSchema.virtual('password')
     })
 
     .get(function () {
+        // no arrow function, because we use [this]
         return this._plainPassword;
     });
 
 userSchema.methods.checkPassword = function (password) {
+    // no arrow function, because we use [this]
     if (!password) return false;
     if (!this.passwordHash) return false;
     return crypto.pbkdf2Sync(password, this.salt, 1, 128, 'sha1') == this.passwordHash;

@@ -16,10 +16,10 @@ define([
         start: '/login'
     });
 
-    webix.attachEvent('onBeforeAjax', (mode, url, data, request, headers) => {
-        headers.Authorization = localStorage.getItem('token');
-        console.log(headers);
-    });
+    // webix.attachEvent('onBeforeAjax', (mode, url, data, request, headers) => {
+    //     headers.Authorization = localStorage.getItem('token');
+    //     console.log(headers);
+    // });
 
 
     app.use(menu);

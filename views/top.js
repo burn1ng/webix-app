@@ -1,5 +1,5 @@
 define([
-    'app'
+    'appAdmin'
 ], (app) => {
     let header = {
         type: 'header',
@@ -8,7 +8,7 @@ define([
 
     let menu = {
         view: 'menu',
-        id: 'top:menu',
+        id: 'topMenu',
         width: 180,
         layout: 'y',
         select: true,
@@ -47,6 +47,6 @@ define([
 
     return {
         $ui: ui,
-        $menu: 'top:menu'
+        $menu: 'topMenu'
     };
 });

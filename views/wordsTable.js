@@ -22,14 +22,14 @@ define([
         id: 'gridDatatable',
         view: 'datatable',
         editable: true,
-        editaction: 'custom',
+        // editaction: 'custom',
         resizeColumn: true,
         resizeRow: true,
-        on: {
-            onItemClick(id) {
-                this.editRow(id);
-            }
-        },
+        // on: {
+        //     onItemClick(id) {
+        //         this.editRow(id);
+        //     }
+        // },
         columns: [
             {id: 'originalWord', fillspace: 2, editor: 'text', header: ['Original word', {content: 'textFilter'}]},
             {id: 'translationWord', fillspace: 3, editor: 'text', header: ['Translation', {content: 'textFilter'}]},

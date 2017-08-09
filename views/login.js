@@ -1,5 +1,5 @@
 define([
-    'app'
+    'appLogin'
 ], (app) => {
     let ui = {
         rows: [
@@ -49,20 +49,33 @@ define([
             });
 
             loginForm.attachEvent('onSubmit', () => {
-                webix.ajax().post('/login', $$('log_form').getValues(), {
+                webix.ajax().post('/api/login', $$('log_form').getValues(), {
                     error(text, data, xhr) {
+                        console.log(xhr);
                         webix.message(`Wooops. Looks like a error: ${xhr.response}`);
                     },
                     success(text, data, xhr) {
                         let receivedToken = JSON.parse(xhr.response).token;
-                        let localToken = localStorage.getItem('token');
+                        localStorage.setItem('token', receivedToken);
 
-                        if (!localToken) {
-                            localStorage.setItem('token', receivedToken);
-                        }
-
-                        app.show('/top/wordsTable');
-                        console.log(xhr);
+                        webix.ajax().headers({
+                            Authorization: receivedToken
+                        }).get('/admin', (html) => {
+                            // window.location.href = '/admin';
+                            document.open();
+                            document.write(html);
+                            document.close();
+                        });
+                        // .then(() => {
+                        //     window.location.href = '/admin';
+                        // })
+                        // .then(() => {
+                        //     document.open();
+                        //     document.write(newHTML);
+                        //     document.close();
+                        // });
+                        // app.show('/top/wordsTable');
+                        // console.log(xhr);
                     }
                 });
             });
