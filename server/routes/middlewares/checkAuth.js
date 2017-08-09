@@ -9,7 +9,9 @@ module.exports = async (ctx, next) => {
         else {
             ctx.status = 401;
             // ctx.body = 'access denied, please log in again or register';
-            ctx.redirect('/public');
+
+            // ctx.redirect('/public');
+            // ctx.body = 'пошёл нахуй';
         }
     })(ctx, next);
 };

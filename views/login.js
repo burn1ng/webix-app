@@ -58,14 +58,15 @@ define([
                         let receivedToken = JSON.parse(xhr.response).token;
                         localStorage.setItem('token', receivedToken);
 
-                        webix.ajax().headers({
-                            Authorization: receivedToken
-                        }).get('/admin', (html) => {
-                            // window.location.href = '/admin';
-                            document.open();
-                            document.write(html);
-                            document.close();
-                        });
+                        // webix.ajax().headers({
+                        //     Authorization: receivedToken
+                        // }).get('/admin', (html) => {
+                        // window.location.href = '/admin';
+                        // window.open();
+                        // document.write(html);
+                        // document.close();
+                        // app.show('/top/wordsTable');
+                        // });
                         // .then(() => {
                         //     window.location.href = '/admin';
                         // })

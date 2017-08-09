@@ -2,6 +2,7 @@ const Koa = require('koa'); // ядро
 const Router = require('koa-router'); // маршрутизация
 const bodyParser = require('koa-bodyparser'); // парсер для POST запросов
 const serve = require('koa-static'); // модуль, который отдает статические файлы типа index.html из заданной директории
+// const send = require('koa-send');
 const logger = require('koa-logger'); // опциональный модуль для логов сетевых запросов. Полезен при разработке.
 const passport = require('koa-passport'); // реализация passport для Koa
 const mongoose = require('mongoose'); // стандартная прослойка для работы с MongoDB
@@ -23,6 +24,11 @@ app.use(bodyParser());
 app.use(passport.initialize()); // first passport
 app.use(router.routes()); // after that - routes !!important
 app.use(router.allowedMethods()); // Returns separate middleware for responding to OPTIONS requests
+
+// app.use(async (ctx) => {
+//     if (ctx.path == '/admin') ctx.body = 'Try GET /package.json';
+//     await send(ctx, ctx.path);
+// });
 app.listen(3000); // запускаем сервер на порту 3000
 
 passport.use(localStrategy);

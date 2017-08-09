@@ -51,7 +51,9 @@ module.exports = {
                 const token = jwt.sign(payload, jwtsecret); // creating JWT here
 
                 ctx.status = 200;
-                ctx.body = {user: user.displayName, token: `JWT ${token}`};
+                ctx.headers = {token: `JWT ${token}`};
+                ctx.redirect = '/admin';
+                // ctx.body = {user: user.displayName, token: `JWT ${token}`};
             }
         })(ctx);
     }

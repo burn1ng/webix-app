@@ -9,8 +9,9 @@ const checkAuthMiddleware = require('./middlewares/checkAuth');
 
 module.exports = (router) => {
     router.all('/admin', checkAuthMiddleware, async (ctx) => {
-        await controllers.user.sendAdminPage(ctx);
-        // ctx.redirect('/adminPage');
+        // await controllers.user.sendAdminPage(ctx);
+        ctx.body = 'дратути';
+        // ctx.redirect('/admin.html');
     });
     // router.get('/adminPage', async (ctx, next) => {
     //     await passport.authenticate('jwt', (err, user) => {
