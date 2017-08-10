@@ -1,5 +1,5 @@
 define([
-    'appAdmin'
+    'protected'
 ], (app) => {
     let header = {
         type: 'header',

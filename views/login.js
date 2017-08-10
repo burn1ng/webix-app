@@ -1,5 +1,5 @@
 define([
-    'appLogin'
+    'public'
 ], (app) => {
     let ui = {
         rows: [
@@ -51,17 +51,27 @@ define([
             loginForm.attachEvent('onSubmit', () => {
                 webix.ajax().post('/api/login', $$('log_form').getValues(), {
                     error(text, data, xhr) {
-                        console.log(xhr);
                         webix.message(`Wooops. Looks like a error: ${xhr.response}`);
+                        console.log('wrong username/password');
                         setTimeout(() => {
-                            window.location.href = '/login.html';
+                            window.location.href = '/public.html';
                         }, 4000);
                     },
                     success(text, data, xhr) {
+                        console.log('login - OK');
                         if (xhr.status === 200) {
+                            console.log(xhr);
                             let receivedToken = JSON.parse(xhr.response).token;
                             localStorage.setItem('token', receivedToken);
-                            window.location.href = '/admin.html';
+
+                            webix.ajax().headers({
+                                Authorization: receivedToken
+                            }).post('/dashboard', (text2, data2, xhr2) => {
+                                console.log(xhr2);
+                                if (xhr2.status === 200) {
+                                    window.location.href = '/protected.html';
+                                }
+                            });
                         }
                     }
                 });

@@ -10,5 +10,5 @@ module.exports = (router) => {
 
     router.put('/api/word/:id', checkAuthMiddleware, controllers.word.updateWord);
 
-    // TODO: prefix for /api/ and 2 different routes in server.js
+    // TODO: prefix for /api/
 };

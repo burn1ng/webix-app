@@ -12,13 +12,15 @@ const readFileThunk = src => new Promise((resolve, reject) => {
 });
 
 module.exports = {
-    async sendLoginPage(ctx) {
+    async sendPublicPage(ctx) {
+        ctx.status = 200;
         ctx.type = 'text/html; charset=utf-8';
-        ctx.body = await readFileThunk('./login.html');
+        ctx.body = await readFileThunk('./public.html');
     },
-    async sendAdminPage(ctx) {
+    async sendProtectedPage(ctx) {
+        ctx.status = 200;
         ctx.type = 'text/html; charset=utf-8';
-        ctx.body = await readFileThunk('./admin.html');
+        ctx.body = await readFileThunk('./protected.html');
     },
     // CREATE
     async createUser(ctx) {
@@ -50,6 +52,7 @@ module.exports = {
 
                 ctx.status = 200;
                 ctx.body = {user: user.displayName, token: `JWT ${token}`};
+                ctx.cookies.set('myToken', `JWT ${token}`);
             }
         })(ctx);
     }

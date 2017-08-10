@@ -17,15 +17,18 @@ define([
     });
 
     webix.attachEvent('onBeforeAjax', (mode, url, data, request, headers, files, promise) => {
+        console.log('onBeforeAjax event fired');
         headers.Authorization = localStorage.getItem('token');
     });
 
     webix.attachEvent('onAjaxError', (requestObj) => {
-        window.location.href = '/login.html';
+        console.log('onAjaxError event fired');
+        window.location.href = '/public.html';
     });
 
     webix.attachEvent('onLoadError', (text, xml, xhttp, obj) => {
-        window.location.href = '/login.html';
+        console.log('onLoadError event fired');
+        window.location.href = '/public.html';
     });
 
     app.use(menu);
