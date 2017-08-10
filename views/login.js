@@ -53,30 +53,16 @@ define([
                     error(text, data, xhr) {
                         console.log(xhr);
                         webix.message(`Wooops. Looks like a error: ${xhr.response}`);
+                        setTimeout(() => {
+                            window.location.href = '/login.html';
+                        }, 4000);
                     },
                     success(text, data, xhr) {
-                        let receivedToken = JSON.parse(xhr.response).token;
-                        localStorage.setItem('token', receivedToken);
-
-                        // webix.ajax().headers({
-                        //     Authorization: receivedToken
-                        // }).get('/admin', (html) => {
-                        // window.location.href = '/admin';
-                        // window.open();
-                        // document.write(html);
-                        // document.close();
-                        // app.show('/top/wordsTable');
-                        // });
-                        // .then(() => {
-                        //     window.location.href = '/admin';
-                        // })
-                        // .then(() => {
-                        //     document.open();
-                        //     document.write(newHTML);
-                        //     document.close();
-                        // });
-                        // app.show('/top/wordsTable');
-                        // console.log(xhr);
+                        if (xhr.status === 200) {
+                            let receivedToken = JSON.parse(xhr.response).token;
+                            localStorage.setItem('token', receivedToken);
+                            window.location.href = '/admin.html';
+                        }
                     }
                 });
             });

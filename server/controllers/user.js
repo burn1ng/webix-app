@@ -19,7 +19,6 @@ module.exports = {
     async sendAdminPage(ctx) {
         ctx.type = 'text/html; charset=utf-8';
         ctx.body = await readFileThunk('./admin.html');
-        console.log(ctx);
     },
     // CREATE
     async createUser(ctx) {
@@ -39,7 +38,6 @@ module.exports = {
             if (user == false) {
                 ctx.status = 401;
                 ctx.body = 'Login failed';
-                // ctx.redirect('/public');
             }
             else {
                 // payload - information in token, which we can get
@@ -51,9 +49,7 @@ module.exports = {
                 const token = jwt.sign(payload, jwtsecret); // creating JWT here
 
                 ctx.status = 200;
-                ctx.headers = {token: `JWT ${token}`};
-                ctx.redirect = '/admin';
-                // ctx.body = {user: user.displayName, token: `JWT ${token}`};
+                ctx.body = {user: user.displayName, token: `JWT ${token}`};
             }
         })(ctx);
     }

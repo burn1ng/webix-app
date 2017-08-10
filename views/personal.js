@@ -1,5 +1,5 @@
 define([
-    'app',
+    'appAdmin',
     'libs/webix-jet-core/plugins/locale',
     'libs/webix-jet-core/plugins/theme'
 ], (app, locales, themes) => {

@@ -1,7 +1,7 @@
 define([], () => {
     let collection = new webix.DataCollection({
-        url: '/getWords',
-        save: 'rest->/word'
+        url: 'api/getWords',
+        save: 'rest->/api/word'
     });
 
     return {

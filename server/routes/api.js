@@ -10,9 +10,5 @@ module.exports = (router) => {
 
     router.put('/api/word/:id', checkAuthMiddleware, controllers.word.updateWord);
 
-    // router.get('/custom', checkAuthMiddleware, (ctx) => {
-    //     console.log(ctx);
-    //     ctx.body = `hello ${ctx.loggedUser.displayName}`;
-    // });
     // TODO: prefix for /api/ and 2 different routes in server.js
 };

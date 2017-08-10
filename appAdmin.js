@@ -16,9 +16,16 @@ define([
         start: '/top/start'
     });
 
-    webix.attachEvent('onBeforeAjax', (mode, url, data, request, headers) => {
+    webix.attachEvent('onBeforeAjax', (mode, url, data, request, headers, files, promise) => {
         headers.Authorization = localStorage.getItem('token');
-        console.log(headers);
+    });
+
+    webix.attachEvent('onAjaxError', (requestObj) => {
+        window.location.href = '/login.html';
+    });
+
+    webix.attachEvent('onLoadError', (text, xml, xhttp, obj) => {
+        window.location.href = '/login.html';
     });
 
     app.use(menu);

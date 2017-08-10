@@ -9,25 +9,18 @@ const checkAuthMiddleware = require('./middlewares/checkAuth');
 
 module.exports = (router) => {
     router.all('/admin', checkAuthMiddleware, async (ctx) => {
-        // await controllers.user.sendAdminPage(ctx);
-        ctx.body = 'дратути';
+        ctx.status = 200;
+        ctx.body = true;
+        // ctx.status = 302;
+        // ctx.set('Location', '/admin');
         // ctx.redirect('/admin.html');
+        // ctx.set = {Location: '/admin.html'};
+        // await controllers.user.sendAdminPage(ctx);
+        // ctx.status = 200;
+        // ctx.message = 'you are login successfully to dashboard';
+        // ctx.status = 301;
+        // ctx.body = 'Redirecting to shopping cart';
+        // ctx.status = 301;
+        // ctx.append('Location', 'admin.html');
     });
-    // router.get('/adminPage', async (ctx, next) => {
-    //     await passport.authenticate('jwt', (err, user) => {
-    //         if (user) {
-    //             // console.log(ctx);
-    //             // ctx.body = `hello ${user.displayName}`;
-    //             // TODO send admin.html to client
-    //             // ctx.redirect('/admin');
-    //             // ctx.status = 200;
-    //             // controllers.user.sendAdminPage();
-    //             controllers.user.sendAdminPage(ctx);
-    //         }
-    //         else {
-    //             ctx.status = 401;
-    //             ctx.redirect('/public');
-    //         }
-    //     })(ctx, next);
-    // });
 };
