@@ -1,12 +1,59 @@
 define([
-    'models/words'
+    // 'models/words'
 ], (words) => {
     function addRow() {
-        $$('gridDatatable').add({originalWord: 'New word', translationWord: 'Translation', partOfSpeech: '0'});
+        $$('gridDatatable').add({originalWord: '1', translationWord: '11', partOfSpeech: 1});
     }
     function deleteRow() {
         $$('gridDatatable').remove($$('gridDatatable').getSelectedId(true));
     }
+
+    // custom proxy for datatable editing in row, and upload ALL changes in 1 call to server
+
+    webix.proxy.restWithDataProcessorDelay = {
+        $proxy: true,
+        load(view, callback) {
+            webix.ajax(this.source, callback, view);
+        },
+        save(view, update, dp, callback) {
+            return webix.delay(() => {
+                webix.proxy.restWithDataProcessorDelay._save_logic.call(this, view, update, dp, callback, webix.ajax());
+            });
+        },
+
+        _save_logic(view, update, dp, callback, ajax) {
+            let url = this.source;
+            let query = '';
+            let mark = url.indexOf('?');
+
+            if (mark !== -1) {
+                query = url.substr(mark);
+                url = url.substr(0, mark);
+            }
+
+            url += url.charAt(url.length - 1) == '/' ? '' : '/';
+            let mode = update.operation;
+
+
+            let data = update.data;
+            if (mode === 'insert') delete data.id;
+            // if (mode === 'insert') {
+            //     delete data.id;
+            //     ajax.post(url + query, data, callback);
+            // }
+
+            // call restWithDataProcessorDelay URI
+            if (mode === 'update') {
+                ajax.put(url + data.id + query, data, callback);
+            }
+            else if (mode === 'delete') {
+                ajax.del(url + data.id + query, data, callback);
+            }
+            else {
+                ajax.post(url + query, data, callback);
+            }
+        }
+    };
 
     let toolbar = {
         id: 'toolbarForDatatable',
@@ -20,16 +67,19 @@ define([
 
     let grid = {
         id: 'gridDatatable',
+        url: 'api/getWords', // simple load data
+        save: 'restWithDataProcessorDelay->/api/word', // custom proxy
         view: 'datatable',
         editable: true,
-        // editaction: 'custom',
         resizeColumn: true,
         resizeRow: true,
-        // on: {
-        //     onItemClick(id) {
-        //         this.editRow(id);
-        //     }
-        // },
+        select: 'row',
+        editaction: 'custom',
+        on: {
+            onItemDblClick(id) {
+                this.editRow(id);
+            }
+        },
         columns: [
             {id: 'originalWord', fillspace: 2, editor: 'text', header: ['Original word', {content: 'textFilter'}]},
             {id: 'translationWord', fillspace: 3, editor: 'text', header: ['Translation', {content: 'textFilter'}]},
@@ -75,11 +125,11 @@ define([
                 body: 'New word added to your vocabulary and saved.'
             });
 
-            $scope.on(words.arrayOfWords, 'onDataUpdate', () => {
-                popup.show();
-            });
+            // $scope.on(words.arrayOfWords, 'onDataUpdate', () => {
+            //     popup.show();
+            // });
 
-            $$('gridDatatable').parse(words.arrayOfWords);
+            // $$('gridDatatable').parse(words.arrayOfWords);
         }
     };
 });

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto'); // for executing crypting operations and creation of password hash
+// const db = require('../config/db');
 
 const userSchema = new mongoose.Schema({
     displayName: String,

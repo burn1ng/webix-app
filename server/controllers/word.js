@@ -4,7 +4,16 @@ module.exports = {
     // CREATE
     async createWord(ctx) {
         try {
-            ctx.body = await Word.create(ctx.request.body);
+            ctx.body = await Word.create(
+                ctx.request.body,
+                (err, word) => {
+                    if (err) {
+                        console.log(ctx);
+                        throw err;
+                    }
+                    console.log('word created!');
+                    console.log(word);
+                });
         }
         catch (err) {
             ctx.throw(500, 'Problem with adding word in database', {err});
@@ -22,6 +31,7 @@ module.exports = {
     // UPDATE
     async updateWord(ctx) {
         try {
+            console.log(ctx);
             ctx.body = await Word.findByIdAndUpdate(
                 ctx.request.body._id,
                 {$set:
@@ -33,16 +43,27 @@ module.exports = {
                 },
                 {new: true},
                 (err, updatedWord) => {
-                    if (err) return err;
-                    return updatedWord;
+                    if (err) throw err;
+                    console.log('this is updatedWord \n');
+                    console.log(updatedWord);
+                    console.log('word is updated!');
                 }
             );
         }
         catch (err) {
             ctx.throw(500, 'Problem with update word in database', {err});
         }
+    },
+    // DELETE
+    async deleteWord(ctx) {
+        try {
+            // console.log(ctx.request.body);
+            ctx.body = await Word.remove({_id: ctx.request.body._id}, () => {
+                console.log('deleting is successfull');
+            });
+        }
+        catch (err) {
+            ctx.throw(500, 'Problem with deleting word from database', {err});
+        }
     }
-
-    // other controllers
-
 };

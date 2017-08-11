@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
+const db = require('../config/db');
 
 const wordSchema = new mongoose.Schema({
     originalWord: {
         type: String,
         required: true,
-        unique: true,
+        // unique: true,
+        index: true, // don't touch
         maxlength: 45
     },
     translationWord: {
@@ -20,6 +22,9 @@ const wordSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const Word = mongoose.model('Word', wordSchema);
+wordSchema.set('autoIndex', false);
+
+const connection = mongoose.createConnection(db.url);
+const Word = connection.model('Word', wordSchema);
 
 module.exports = Word;
