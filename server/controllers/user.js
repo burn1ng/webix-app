@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const fs = require('fs');
-const passport = require('koa-passport'); // реализация passport для Koa
-const jwt = require('jsonwebtoken'); // аутентификация  по JWT для hhtp
+const passport = require('koa-passport');
+const jwt = require('jsonwebtoken'); // auth for http by JWT
 const jwtsecret = require('../config/app').jwt;
 
 const readFileThunk = src => new Promise((resolve, reject) => {

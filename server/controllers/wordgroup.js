@@ -1,34 +1,34 @@
-const Word = require('../models/word');
+const WordGroup = require('../models/wordgroup');
 
 module.exports = {
     // CREATE
-    async createWord(ctx) {
-        ctx.body = await Word.create(
+    async createWordGroup(ctx) {
+        ctx.body = await WordGroup.create(
             ctx.request.body,
-            (err, word) => {
+            (err, wordgroup) => {
                 if (err) {
                     console.log(ctx.request.body);
-                    ctx.throw(500, 'Problem with adding word in database', {err});
+                    ctx.throw(500, 'Problem with adding wordgroup in database', {err});
                 }
-                console.log('word created!');
-                console.log(word);
+                console.log('wordgroup created!');
+                console.log(wordgroup);
             }
         );
     },
     // READ
-    async getWords(ctx) {
+    async getWordGroups(ctx) {
         try {
-            ctx.body = await Word.find({});
+            ctx.body = await WordGroup.find({});
         }
         catch (err) {
             ctx.throw(500, 'Sorry, can\'t find words in database', {err});
         }
     },
     // UPDATE
-    async updateWord(ctx) {
+    async updateWordGroup(ctx) {
         try {
             console.log(ctx);
-            ctx.body = await Word.findByIdAndUpdate(
+            ctx.body = await WordGroup.findByIdAndUpdate(
                 ctx.request.body._id,
                 {$set:
                     {
@@ -39,10 +39,10 @@ module.exports = {
                 $inc: {__v: 1}
                 },
                 {new: true},
-                (err, updatedWord) => {
+                (err, updatedWordGroup) => {
                     if (err) throw err;
                     console.log('this is updatedWord! \n');
-                    console.log(updatedWord);
+                    console.log(updatedWordGroup);
                     console.log('\n word is updated!');
                 }
             );
@@ -52,9 +52,9 @@ module.exports = {
         }
     },
     // DELETE
-    async deleteWord(ctx) {
+    async deleteWordGroup(ctx) {
         try {
-            ctx.body = await Word.remove({_id: ctx.request.body._id}, () => {
+            ctx.body = await WordGroup.remove({_id: ctx.request.body._id}, () => {
                 console.log('deleting is successfull');
             });
         }

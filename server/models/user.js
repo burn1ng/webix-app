@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto'); // for executing crypting operations and creation of password hash
-// const db = require('../config/db');
+const db = require('../config/db');
 
 const userSchema = new mongoose.Schema({
     displayName: String,
@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
     salt: String
 }, {
     timestamps: true
+    // autoIndex: false //for production purposes
 });
 
 userSchema.virtual('password')
@@ -41,6 +42,7 @@ userSchema.methods.checkPassword = function (password) {
     return crypto.pbkdf2Sync(password, this.salt, 1, 128, 'sha1') == this.passwordHash;
 };
 
-const User = mongoose.model('User', userSchema);
+const connection = mongoose.createConnection(db.url);
+const User = connection.model('User', userSchema);
 
 module.exports = User;

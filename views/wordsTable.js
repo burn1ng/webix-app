@@ -2,7 +2,7 @@ define([
     // 'models/words'
 ], (words) => {
     function addRow() {
-        $$('gridDatatable').add({originalWord: '1', translationWord: '11', partOfSpeech: 1});
+        $$('gridDatatable').add({originalWord: ' ', translationWord: ' ', partOfSpeech: 0});
     }
     function deleteRow() {
         $$('gridDatatable').remove($$('gridDatatable').getSelectedId(true));
@@ -37,10 +37,6 @@ define([
 
             let data = update.data;
             if (mode === 'insert') delete data.id;
-            // if (mode === 'insert') {
-            //     delete data.id;
-            //     ajax.post(url + query, data, callback);
-            // }
 
             // call restWithDataProcessorDelay URI
             if (mode === 'update') {
@@ -68,12 +64,16 @@ define([
     let grid = {
         id: 'gridDatatable',
         url: 'api/getWords', // simple load data
-        save: 'restWithDataProcessorDelay->/api/word', // custom proxy
+        save: {
+            url: 'restWithDataProcessorDelay->/api/word', // custom proxy
+            updateFromResponse: true
+        },
         view: 'datatable',
         editable: true,
         resizeColumn: true,
         resizeRow: true,
         select: 'row',
+        multiselect: true,
         editaction: 'custom',
         on: {
             onItemDblClick(id) {

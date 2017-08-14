@@ -5,8 +5,6 @@ const wordSchema = new mongoose.Schema({
     originalWord: {
         type: String,
         required: true,
-        // unique: true,
-        index: true, // don't touch
         maxlength: 45
     },
     translationWord: {
@@ -17,12 +15,12 @@ const wordSchema = new mongoose.Schema({
     partOfSpeech: {
         type: Number,
         required: true
-    }
+    },
+    wordGroup: {type: Number, ref: 'WordGroup'}
 }, {
     timestamps: true
+    // autoIndex: false //for production purposes
 });
-
-wordSchema.set('autoIndex', false);
 
 const connection = mongoose.createConnection(db.url);
 const Word = connection.model('Word', wordSchema);
