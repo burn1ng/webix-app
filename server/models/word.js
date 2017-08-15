@@ -13,12 +13,11 @@ const wordSchema = new mongoose.Schema({
     },
     translationWord: {
         type: String,
-        required: true,
         maxlength: 150
     },
     partOfSpeech: {
-        type: Number,
-        required: true
+        type: Number
+        // required: true
     },
     wordGroup: {
         type: mongoose.Schema.Types.ObjectId,
