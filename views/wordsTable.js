@@ -77,7 +77,7 @@ define([
                 id: 'index',
                 header: '№',
                 adjust: true,
-                footer: {content: 'customSummColumn'}
+                footer: {content: 'customSummColumn', css: 'sample_footer'}
             },
             {
                 id: 'originalWord',
@@ -85,7 +85,7 @@ define([
                 editor: 'text',
                 header: ['Original word', {content: 'customTextFilter', placeholder: 'Find word'}],
                 sort: 'string',
-                footer: {text: 'Total', colspan: 3}
+                footer: {text: 'words in wordgroup', colspan: 3, css: 'sample_footer'}
             },
             {
                 id: 'translationWord',
@@ -181,7 +181,8 @@ define([
             {cols: [
                 {view: 'button', value: 'Login', type: 'form'}
             ]}
-        ]};
+        ]
+    };
 
     let ui = {
         rows: [
