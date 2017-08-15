@@ -16,12 +16,13 @@ define([
         start: '/top/dashboard'
     });
 
-    let urlWithoutHeaders = '//cdn.webix.com/extras/xlsx.core.min.js';
+    // webix.debug = true;
 
     webix.attachEvent('onBeforeAjax', (mode, url, data, request, headers) => {
         console.log('onBeforeAjax event fired: \n');
+        console.log(data);
         // we need to check url, because webix CDN don't allow Authorization token
-        if (url.substring(0, urlWithoutHeaders.length) !== urlWithoutHeaders) {
+        if (url.substring(0, 15) !== '//cdn.webix.com') {
             headers.Authorization = localStorage.getItem('token');
         }
     });
