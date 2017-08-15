@@ -14,8 +14,8 @@ define([
         select: true,
         template: "<span class='webix_icon fa-#icon#'></span> #value# ",
         data: [
-            {value: 'DashBoard', id: 'start', href: '#!/top/start', icon: 'envelope-o'},
-            {value: 'Data', id: 'data', href: '#!/top/wordsTable', icon: 'briefcase'},
+            {value: 'DashBoard', id: 'start', href: '#!/top/dashboard', icon: 'envelope-o'},
+            {value: 'WordsTable View', id: 'data', href: '#!/top/wordsTable', icon: 'briefcase'},
             {value: 'Settings', id: 'settings', href: '#!/top/settings/personal', icon: 'cog'}
         ]
     };
@@ -31,7 +31,10 @@ define([
             rows: [header, menu]
         },
         {
-            rows: [{height: 10},
+            rows: [
+                {
+                    height: 10
+                },
                 {
                     type: 'clean',
                     css: 'app-right-panel',
