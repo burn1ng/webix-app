@@ -36,6 +36,8 @@ define([], () => (
         theme: 'Theme',
         app_settings: 'App settings',
         wordgroups: 'Group of words',
-        del_all_rows: 'Delete all words'
+        del_all_rows: 'Delete all words',
+        load_message: 'Загрузка данных...',
+        empty_data: 'Нет данных'
     }
 ));

@@ -36,6 +36,8 @@ define([], () => (
         theme: 'Цветовая тема',
         app_settings: 'Настройки приложения',
         wordgroups: 'Группы слов',
-        del_all_rows: 'Удалить все слова'
+        del_all_rows: 'Удалить все слова',
+        load_message: 'Loading...',
+        empty_data: 'There is no data'
     }
 ));
