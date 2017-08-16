@@ -1,13 +1,15 @@
 define([
-    'models/words'
-], (words) => {
+    'models/words',
+    'locale'
+], (words, _) => {
     function addRow() {
-        words.arrayOfWords.add({originalWord: 'New word', translationWord: '', partOfSpeech: 0});
+        // words.arrayOfWords.add({originalWord: 'New word', translationWord: '', partOfSpeech: 0});
+        $$('gridDatatable').add({originalWord: 'New word', translationWord: '', partOfSpeech: 0});
     }
     function deleteRow() {
-        words.arrayOfWords.remove($$('gridDatatable').getSelectedId(true));
+        // words.arrayOfWords.remove($$('gridDatatable').getSelectedId(true));
+        $$('gridDatatable').remove($$('gridDatatable').getSelectedId(true));
     }
-
     function showDataStatus(grid) {
         if (!grid.count()) {
             grid.showOverlay('There\'s no data');
@@ -16,6 +18,50 @@ define([
             grid.hideOverlay();
         }
     }
+
+    // custom proxy for datatable editing in row, and upload ALL changes in 1 call to server
+    webix.proxy.restWithDataProcessorDelay = {
+        $proxy: true,
+        load(view, callback) {
+            webix.ajax(this.source, callback, view);
+        },
+        save(view, update, dp, callback) {
+            return webix.delay(() => {
+                webix.proxy.restWithDataProcessorDelay._save_logic.call(
+                    this, view, update, dp, callback, webix.ajax()
+                );
+            });
+        },
+
+        _save_logic(view, update, dp, callback, ajax) {
+            let url = this.source;
+            let query = '';
+            let mark = url.indexOf('?');
+
+            if (mark !== -1) {
+                query = url.substr(mark);
+                url = url.substr(0, mark);
+            }
+
+            url += url.charAt(url.length - 1) == '/' ? '' : '/';
+            let mode = update.operation;
+
+
+            let data = update.data;
+            if (mode === 'insert') delete data.id;
+
+            // call restWithDataProcessorDelay URI
+            if (mode === 'update') {
+                ajax.put(url + data.id + query, data, callback);
+            }
+            else if (mode === 'delete') {
+                ajax.del(url + data.id + query, data, callback);
+            }
+            else {
+                ajax.post(url + query, data, callback);
+            }
+        }
+    };
 
     // custom summColumn logic for footer's total of rows
     webix.ui.datafilter.customSummColumn = webix.extend({
@@ -40,19 +86,19 @@ define([
         id: 'toolbarForDatatable',
         view: 'toolbar',
         elements: [
-            {view: 'button', value: 'Add row', click: addRow},
-            {view: 'button', value: 'Delete row', click: deleteRow},
+            {view: 'button', value: _('Add row'), click: addRow},
+            {view: 'button', value: _('Delete row'), click: deleteRow},
             {gravity: 2}
         ]
     };
 
     let grid = {
         id: 'gridDatatable',
-        // url: 'api/getWords', // simple load data
-        // save: {
-        //     url: 'restWithDataProcessorDelay->/api/word', // custom proxy
-        //     updateFromResponse: true
-        // },
+        url: 'api/getWords', // simple load data
+        save: {
+            url: 'restWithDataProcessorDelay->/api/word', // custom proxy
+            updateFromResponse: true
+        },
         view: 'datatable',
         editable: true,
         resizeColumn: true,
@@ -70,6 +116,18 @@ define([
                 this.data.each((obj, i) => {
                     obj.index = i + 1;
                 });
+            },
+            onBeforeLoad() {
+                this.showOverlay('Loading...');
+            },
+            onAfterLoad() {
+                showDataStatus(this);
+            },
+            onAfterDelete() {
+                showDataStatus(this);
+            },
+            onAfterAdd() {
+                showDataStatus(this);
             }
         },
         columns: [
@@ -83,31 +141,31 @@ define([
                 id: 'originalWord',
                 fillspace: 2,
                 editor: 'text',
-                header: ['Original word', {content: 'customTextFilter', placeholder: 'Find word'}],
+                header: [_('Original word'), {content: 'customTextFilter', placeholder: _('Find word')}],
                 sort: 'string',
-                footer: {text: 'words in wordgroup', colspan: 3, css: 'sample_footer'}
+                footer: {text: _('words in wordgroup'), colspan: 3, css: 'sample_footer'}
             },
             {
                 id: 'translationWord',
                 fillspace: 4,
                 editor: 'text',
-                header: ['Translation', {content: 'customTextFilter', placeholder: 'Find translation'}],
+                header: [_('Translation'), {content: 'customTextFilter', placeholder: _('Find translation')}],
                 sort: 'string'
             },
             {
                 id: 'partOfSpeech',
                 fillspace: 1,
                 editor: 'select',
-                header: ['Part of speech', {content: 'selectFilter'}],
+                header: [_('Part of speech'), {content: 'selectFilter'}],
                 collection: [
-                    {id: 1, value: 'Verb'},
-                    {id: 2, value: 'Noun'},
-                    {id: 3, value: 'Adjective'},
-                    {id: 4, value: 'Adverb'},
-                    {id: 5, value: 'Pronoun'},
-                    {id: 6, value: 'Preposition'},
-                    {id: 7, value: 'Conjunction'},
-                    {id: 8, value: 'Interjection'}
+                    {id: 1, value: _('Verb')},
+                    {id: 2, value: _('Noun')},
+                    {id: 3, value: _('Adjective')},
+                    {id: 4, value: _('Adverb')},
+                    {id: 5, value: _('Pronoun')},
+                    {id: 6, value: _('Preposition')},
+                    {id: 7, value: _('Conjunction')},
+                    {id: 8, value: _('Interjection')}
                 ],
                 sort: 'string'
             }
@@ -122,7 +180,7 @@ define([
                 view: 'button',
                 type: 'iconButton',
                 icon: 'file-image-o',
-                label: 'Export to Png',
+                label: _('Test reults'),
                 adjust: true,
                 click() {
                     // TODO
@@ -134,9 +192,7 @@ define([
                 tooltip: 'Export to Png',
                 icon: 'file-image-o',
                 click() {
-                    webix.toPNG($$('gridDatatable'), {
-                        filename: 'myVocabulary'
-                    });
+                    webix.toPNG($$('gridDatatable'), 'my_vocabulary');
                 }
             },
             {
@@ -174,22 +230,11 @@ define([
         ]
     };
 
-    let testForm = {
-        view: 'form',
-        elements: [
-            {view: 'text', label: 'Group Name', placeholder: 'New group'},
-            {cols: [
-                {view: 'button', value: 'Login', type: 'form'}
-            ]}
-        ]
-    };
-
     let ui = {
         rows: [
             toolbar,
             grid,
-            dtFooterToolbar,
-            testForm
+            dtFooterToolbar
         ]
     };
 
@@ -206,19 +251,20 @@ define([
             // });
 
 
-            $$('gridDatatable').data.sync(words.arrayOfWords);
-            words.arrayOfWords.attachEvent('onBeforeLoad', () => {
-                $$('gridDatatable').showOverlay('Loading...');
-            });
-            words.arrayOfWords.attachEvent('onAfterLoad', () => {
-                showDataStatus($$('gridDatatable'));
-            });
-            words.arrayOfWords.attachEvent('onAfterDelete', () => {
-                showDataStatus($$('gridDatatable'));
-            });
-            words.arrayOfWords.attachEvent('onAfterAdd', () => {
-                showDataStatus($$('gridDatatable'));
-            });
+            // $$('gridDatatable').data.sync(words.arrayOfWords);
+
+            // words.arrayOfWords.attachEvent('onBeforeLoad', () => {
+            //     $$('gridDatatable').showOverlay('Loading...');
+            // });
+            // words.arrayOfWords.attachEvent('onAfterLoad', () => {
+            //     showDataStatus($$('gridDatatable'));
+            // });
+            // words.arrayOfWords.attachEvent('onAfterDelete', () => {
+            //     showDataStatus($$('gridDatatable'));
+            // });
+            // words.arrayOfWords.attachEvent('onAfterAdd', () => {
+            //     showDataStatus($$('gridDatatable'));
+            // });
         }
     };
 });
