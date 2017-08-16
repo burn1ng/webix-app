@@ -1,6 +1,7 @@
 define([
-    'protected'
-], (app) => {
+    'protected',
+    'models/langState'
+], (app, langState) => {
     let header = {
         type: 'header',
         template: app.config.name
