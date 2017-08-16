@@ -1,7 +1,7 @@
 define([
-    // 'models/words'
-    'views/wordsTable'
-], (wordsTable) => {
+    'views/wordsTable',
+    'locale'
+], (wordsTable, _) => {
     let list = {
         view: 'list',
         data: ['Users', 'Reports', 'Settings'],
@@ -15,11 +15,12 @@ define([
 
     let testForm = {
         view: 'form',
-        elements: [
-            {view: 'text', label: 'Group Name', placeholder: 'New group'},
+        rows: [
+            {view: 'label', label: _('wordgroup_name_label'), align: 'center'},
+            {view: 'text', placeholder: _('wordgroup_name_placeholder'), name: 'wordgroupName'},
             {cols: [
-                {view: 'button', value: 'Add', type: 'form'},
-                {view: 'button', value: 'Add', label: 'Remove', type: 'danger'}
+                {view: 'button', label: _('add'), type: 'form'},
+                {view: 'button', label: _('remove'), type: 'danger'}
             ]}
         ]
     };
@@ -33,8 +34,8 @@ define([
                 responsive: 'dashboard',
                 cols: [
                     {rows: [
-                        list,
-                        testForm
+                        testForm,
+                        list
                     ]},
 
                     {view: 'resizer'},

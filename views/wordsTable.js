@@ -3,12 +3,13 @@ define([
     'locale'
 ], (words, _) => {
     function addRow() {
-        // words.arrayOfWords.add({originalWord: 'New word', translationWord: '', partOfSpeech: 0});
         $$('gridDatatable').add({originalWord: 'New word', translationWord: '', partOfSpeech: 0});
     }
     function deleteRow() {
-        // words.arrayOfWords.remove($$('gridDatatable').getSelectedId(true));
         $$('gridDatatable').remove($$('gridDatatable').getSelectedId(true));
+    }
+    function deleteAllRows() {
+        $$('gridDatatable').clearAll();
     }
     function showDataStatus(grid) {
         if (!grid.count()) {
@@ -85,10 +86,13 @@ define([
     let toolbar = {
         id: 'toolbarForDatatable',
         view: 'toolbar',
+        height: 66,
         elements: [
-            {view: 'button', value: _('Add row'), click: addRow},
-            {view: 'button', value: _('Delete row'), click: deleteRow},
-            {gravity: 2}
+            {view: 'button', autowidth: true, type: 'iconButtonTop', icon: 'calendar-plus-o', label: _('add_row'), click: addRow},
+            {view: 'button', autowidth: true, type: 'iconButtonTop', icon: 'calendar-minus-o', label: _('del_row'), click: deleteRow},
+            {gravity: 1},
+            {view: 'button', autowidth: true, type: 'iconButtonTop', icon: 'calendar-times-o', label: _('del_all_rows'), click: deleteAllRows}
+            // {gravity: 2}
         ]
     };
 
@@ -141,31 +145,31 @@ define([
                 id: 'originalWord',
                 fillspace: 2,
                 editor: 'text',
-                header: [_('Original word'), {content: 'customTextFilter', placeholder: _('Find word')}],
+                header: [_('orig_word'), {content: 'customTextFilter', placeholder: _('find_word')}],
                 sort: 'string',
-                footer: {text: _('words in wordgroup'), colspan: 3, css: 'sample_footer'}
+                footer: {text: _('words_amount'), colspan: 3, css: 'sample_footer'}
             },
             {
                 id: 'translationWord',
                 fillspace: 4,
                 editor: 'text',
-                header: [_('Translation'), {content: 'customTextFilter', placeholder: _('Find translation')}],
+                header: [_('translation'), {content: 'customTextFilter', placeholder: _('find_translation')}],
                 sort: 'string'
             },
             {
                 id: 'partOfSpeech',
                 fillspace: 1,
                 editor: 'select',
-                header: [_('Part of speech'), {content: 'selectFilter'}],
+                header: [_('part_of_speech'), {content: 'selectFilter'}],
                 collection: [
-                    {id: 1, value: _('Verb')},
-                    {id: 2, value: _('Noun')},
-                    {id: 3, value: _('Adjective')},
-                    {id: 4, value: _('Adverb')},
-                    {id: 5, value: _('Pronoun')},
-                    {id: 6, value: _('Preposition')},
-                    {id: 7, value: _('Conjunction')},
-                    {id: 8, value: _('Interjection')}
+                    {id: 1, value: _('verb')},
+                    {id: 2, value: _('noun')},
+                    {id: 3, value: _('adjective')},
+                    {id: 4, value: _('adverb')},
+                    {id: 5, value: _('pronoun')},
+                    {id: 6, value: _('preposition')},
+                    {id: 7, value: _('conjunction')},
+                    {id: 8, value: _('interjection')}
                 ],
                 sort: 'string'
             }
@@ -180,7 +184,7 @@ define([
                 view: 'button',
                 type: 'iconButton',
                 icon: 'file-image-o',
-                label: _('Test reults'),
+                label: _('test_results'),
                 adjust: true,
                 click() {
                     // TODO
@@ -189,7 +193,7 @@ define([
             {},
             {
                 view: 'icon',
-                tooltip: 'Export to Png',
+                tooltip: _('png_export'),
                 icon: 'file-image-o',
                 click() {
                     webix.toPNG($$('gridDatatable'), 'my_vocabulary');
@@ -197,7 +201,7 @@ define([
             },
             {
                 view: 'icon',
-                tooltip: 'Export to Pdf',
+                tooltip: _('pdf_export'),
                 icon: 'file-pdf-o',
                 click() {
                     webix.toPDF($$('gridDatatable'), {
@@ -207,9 +211,9 @@ define([
             },
             {
                 view: 'icon',
-                tooltip: 'Export to Excel',
+                tooltip: _('excel_export'),
                 icon: 'file-excel-o',
-                label: 'Export to Excel',
+                label: _('excel_export'),
                 click() {
                     webix.toExcel($$('gridDatatable'), {
                         filename: 'myVocabulary',
@@ -222,7 +226,7 @@ define([
                 view: 'button',
                 type: 'iconButton',
                 icon: 'cog',
-                label: 'Generate test!',
+                label: _('test_generate'),
                 click() {
                     // TODO
                 }

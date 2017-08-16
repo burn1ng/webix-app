@@ -1,9 +1,13 @@
-define([], () => {
+define([
+    'locale'
+], (_) => {
     let views = [
-        {value: 'Personal',
+        {
+            value: _('personal'),
             id: 'personal',
             href: '#!/app/settings/personal',
-            icon: 'home'}
+            icon: 'home'
+        }
     ];
 
     let menu = {

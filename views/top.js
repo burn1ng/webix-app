@@ -1,7 +1,7 @@
 define([
     'protected',
-    'models/langState'
-], (app, langState) => {
+    'locale'
+], (app, _) => {
     let header = {
         type: 'header',
         template: app.config.name
@@ -9,15 +9,15 @@ define([
 
     let menu = {
         view: 'menu',
-        id: 'topMenu',
+        id: 'top:menu',
         width: 180,
         layout: 'y',
         select: true,
         template: "<span class='webix_icon fa-#icon#'></span> #value# ",
         data: [
-            {value: 'DashBoard', id: 'start', href: '#!/top/dashboard', icon: 'envelope-o'},
-            {value: 'WordsTable View', id: 'data', href: '#!/top/wordsTable', icon: 'briefcase'},
-            {value: 'Settings', id: 'settings', href: '#!/top/settings/personal', icon: 'cog'}
+            {value: _('dashboard'), id: 'start', href: '#!/top/dashboard', icon: 'envelope-o'},
+            {value: _('test_results'), id: 'data', href: '#!/top/wordsTable', icon: 'briefcase'},
+            {value: _('settings'), id: 'settings', href: '#!/top/settings/personal', icon: 'cog'}
         ]
     };
 
@@ -51,6 +51,6 @@ define([
 
     return {
         $ui: ui,
-        $menu: 'topMenu'
+        $menu: 'top:menu'
     };
 });
