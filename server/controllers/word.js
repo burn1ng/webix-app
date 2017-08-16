@@ -3,17 +3,12 @@ const Word = require('../models/word');
 module.exports = {
     // CREATE
     async createWord(ctx) {
-        ctx.body = await Word.create(
-            ctx.request.body,
-            (err, word) => {
-                if (err) {
-                    console.log(ctx.request.body);
-                    ctx.throw(500, 'Problem with adding word in database', {err});
-                }
-                console.log('word created!');
-                console.log(word);
-            }
-        );
+        try {
+            ctx.body = await Word.create(ctx.request.body);
+        }
+        catch (err) {
+            ctx.throw(500, 'Problem with adding word in database', {err});
+        }
     },
     // READ
     async getWords(ctx) {
