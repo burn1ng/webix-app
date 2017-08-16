@@ -2,23 +2,55 @@ define([
     'models/words',
     'locale'
 ], (words, _) => {
-    function addRow() {
-        $$('gridDatatable').add({originalWord: 'New word', translationWord: '', partOfSpeech: 0});
+    function addRow(grid) {
+        grid.add({originalWord: 'New word', translationWord: '', partOfSpeech: 0});
     }
-    function deleteRow() {
-        $$('gridDatatable').remove($$('gridDatatable').getSelectedId(true));
+    function deleteRow(grid) {
+        grid.remove(grid.getSelectedId(true));
     }
-    function deleteAllRows() {
-        $$('gridDatatable').clearAll();
+    function deleteAllRows(grid) {
+        let allRows = [];
+        grid.eachRow(
+            (row) => {
+                allRows.push(grid.getItem(row).id);
+            }
+        );
+        grid.remove(allRows);
     }
     function showDataStatus(grid) {
         if (!grid.count()) {
-            grid.showOverlay('There\'s no data');
+            grid.showOverlay(_('empty_data'));
         }
         else {
             grid.hideOverlay();
         }
     }
+
+    // let data = [{originalWord: 'Hawk-eagle, crowned', translationWord: 'Gigashots', partOfSpeech: 3},
+    //     {originalWord: 'Kangaroo, red', translationWord: 'Yakidoo', partOfSpeech: 1},
+    //     {originalWord: "Verreaux's sifaka", translationWord: 'Realfire', partOfSpeech: 5},
+    //     {originalWord: 'White rhinoceros', translationWord: 'Jetpulse', partOfSpeech: 4},
+    //     {originalWord: 'Badger, honey', translationWord: 'Quire', partOfSpeech: 7},
+    //     {originalWord: 'Cardinal, black-throated', translationWord: 'Browsedrive', partOfSpeech: 2},
+    //     {originalWord: 'Aardwolf', translationWord: 'Twitternation', partOfSpeech: 1},
+    //     {originalWord: 'Partridge, coqui', translationWord: 'Rhybox', partOfSpeech: 3},
+    //     {originalWord: 'Red-necked wallaby', translationWord: 'Jaxnation', partOfSpeech: 8},
+    //     {originalWord: 'Kite, black', translationWord: 'Tagchat', partOfSpeech: 6},
+    //     {originalWord: 'Pygmy possum', translationWord: 'Ozu', partOfSpeech: 8},
+    //     {originalWord: 'Mynah, indian', translationWord: 'Lazzy', partOfSpeech: 2},
+    //     {originalWord: 'Owl, great horned', translationWord: 'Edgeblab', partOfSpeech: 6},
+    //     {originalWord: 'Coqui partridge', translationWord: 'Kamba', partOfSpeech: 3},
+    //     {originalWord: 'Glossy ibis', translationWord: 'Kaymbo', partOfSpeech: 5},
+    //     {originalWord: 'Weaver, white-browed sparrow', translationWord: 'Omba', partOfSpeech: 7},
+    //     {originalWord: 'Sandhill crane', translationWord: 'Wikizz', partOfSpeech: 1},
+    //     {originalWord: 'Common turkey', translationWord: 'Buzzshare', partOfSpeech: 1},
+    //     {originalWord: 'Leopard', translationWord: 'Browsezoom', partOfSpeech: 2},
+    //     {originalWord: 'Baboon, yellow', translationWord: 'Skinte', partOfSpeech: 8},
+    //     {originalWord: 'Waxbill, black-cheeked', translationWord: 'Mudo', partOfSpeech: 4},
+    //     {originalWord: 'King vulture', translationWord: 'Camimbo', partOfSpeech: 3},
+    //     {originalWord: 'Antelope, sable', translationWord: 'Dabshots', partOfSpeech: 4},
+    //     {originalWord: 'Grey fox', translationWord: 'Meejo', partOfSpeech: 5},
+    //     {originalWord: 'Marmot, yellow-bellied', translationWord: 'Zoombeat', partOfSpeech: 1}];
 
     // custom proxy for datatable editing in row, and upload ALL changes in 1 call to server
     webix.proxy.restWithDataProcessorDelay = {
@@ -88,11 +120,31 @@ define([
         view: 'toolbar',
         height: 66,
         elements: [
-            {view: 'button', autowidth: true, type: 'iconButtonTop', icon: 'calendar-plus-o', label: _('add_row'), click: addRow},
-            {view: 'button', autowidth: true, type: 'iconButtonTop', icon: 'calendar-minus-o', label: _('del_row'), click: deleteRow},
+            {view: 'button',
+                autowidth: true,
+                type: 'iconButtonTop',
+                icon: 'calendar-plus-o',
+                label: _('add_row'),
+                click() {
+                    addRow($$('gridDatatable'));
+                }},
+            {view: 'button',
+                autowidth: true,
+                type: 'iconButtonTop',
+                icon: 'calendar-minus-o',
+                label: _('del_row'),
+                click() {
+                    deleteRow($$('gridDatatable'));
+                }},
             {gravity: 1},
-            {view: 'button', autowidth: true, type: 'iconButtonTop', icon: 'calendar-times-o', label: _('del_all_rows'), click: deleteAllRows}
-            // {gravity: 2}
+            {view: 'button',
+                autowidth: true,
+                type: 'iconButtonTop',
+                icon: 'calendar-times-o',
+                label: _('del_all_rows'),
+                click() {
+                    deleteAllRows($$('gridDatatable'));
+                }}
         ]
     };
 
@@ -122,7 +174,7 @@ define([
                 });
             },
             onBeforeLoad() {
-                this.showOverlay('Loading...');
+                this.showOverlay(_('load_message'));
             },
             onAfterLoad() {
                 showDataStatus(this);
@@ -253,9 +305,11 @@ define([
             // $scope.on(words.arrayOfWords, 'onDataUpdate', () => {
             //     popup.show();
             // });
-
-
             // $$('gridDatatable').data.sync(words.arrayOfWords);
+
+
+            // $$('gridDatatable').parse(data);
+
 
             // words.arrayOfWords.attachEvent('onBeforeLoad', () => {
             //     $$('gridDatatable').showOverlay('Loading...');
