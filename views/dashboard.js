@@ -10,9 +10,19 @@ define([
         },
         select: true,
         scroll: false,
-        width: 300
+        width: 250
     };
 
+    let testForm = {
+        view: 'form',
+        elements: [
+            {view: 'text', label: 'Group Name', placeholder: 'New group'},
+            {cols: [
+                {view: 'button', value: 'Add', type: 'form'},
+                {view: 'button', value: 'Add', label: 'Remove', type: 'danger'}
+            ]}
+        ]
+    };
 
     let ui = {
         id: 'dashboard',
@@ -22,7 +32,11 @@ define([
                 padding: 0,
                 responsive: 'dashboard',
                 cols: [
-                    list,
+                    {rows: [
+                        list,
+                        testForm
+                    ]},
+
                     {view: 'resizer'},
                     // {template: 'column 2', width: 200},
                     wordsTable
