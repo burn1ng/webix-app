@@ -50,7 +50,7 @@ define([
                 url = url.substr(0, mark);
             }
 
-            url += url.charAt(url.length - 1) == '/' ? '' : '/';
+            url += url.charAt(url.length - 1) === '/' ? '' : '/';
             let mode = update.operation;
 
 
@@ -111,15 +111,16 @@ define([
                 click() {
                     deleteRow($$('gridDatatable'));
                 }},
-            {gravity: 1},
-            {view: 'button',
-                autowidth: true,
-                type: 'iconButtonTop',
+            {},
+            {
+                view: 'icon',
                 icon: 'calendar-times-o',
-                label: _('del_all_rows'),
+                tooltip: _('del_all_rows'),
+                autowidth: true,
                 click() {
                     deleteAllRows($$('gridDatatable'));
-                }}
+                }
+            }
         ]
     };
 
@@ -127,7 +128,7 @@ define([
         id: 'gridDatatable',
         url: 'api/getWords',
         save: {
-            url: 'restWithDataProcessorDelay->/api/word', // custom proxy
+            url: 'restWithDataProcessorDelay->/api/word',
             updateFromResponse: true
         },
         view: 'datatable',
@@ -156,8 +157,11 @@ define([
             },
             onAfterAdd() {
                 showDataStatus(this);
-                // cancel prev edit, open editor on all cells simultaneously and focus on the first column (not index)
-                this.editCancel();
+                // save prev edit, open editor on all cells simultaneously
+                // and focus on the first column (not index)
+                if (this.getEditState()) {
+                    this.editStop();
+                }
                 let id = this.getLastId();
                 this.editRow(id);
                 this.getEditor({row: id, column: 'originalWord'}).focus();
@@ -167,6 +171,7 @@ define([
             {
                 id: 'index',
                 header: '№',
+                width: 40,
                 editor: false,
                 adjust: true,
                 footer: {content: 'customSummColumn', css: 'sample_footer'}
@@ -223,21 +228,19 @@ define([
             },
             {},
             {
-                view: 'button',
-                type: 'icon',
+                view: 'icon',
                 icon: 'file-image-o',
-                label: _('png_export'),
-                autowidth: true,
+                tooltip: _('png_export'),
+                width: 66,
                 click() {
                     webix.toPNG($$('gridDatatable'), 'my_vocabulary');
                 }
             },
             {
-                view: 'button',
-                type: 'icon',
+                view: 'icon',
                 icon: 'file-pdf-o',
-                label: _('pdf_export'),
-                autowidth: true,
+                tooltip: _('pdf_export'),
+                width: 66,
                 click() {
                     webix.toPDF($$('gridDatatable'), {
                         filename: 'myVocabulary'
@@ -245,11 +248,10 @@ define([
                 }
             },
             {
-                view: 'button',
-                type: 'icon',
+                view: 'icon',
                 icon: 'file-excel-o',
-                label: _('excel_export'),
-                autowidth: true,
+                tooltip: _('excel_export'),
+                width: 66,
                 click() {
                     webix.toExcel($$('gridDatatable'), {
                         filename: 'myVocabulary',
