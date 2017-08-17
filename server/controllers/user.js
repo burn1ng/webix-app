@@ -52,7 +52,8 @@ module.exports = {
 
                 ctx.status = 200;
                 ctx.body = {user: user.displayName, token: `JWT ${token}`};
-                ctx.cookies.set('myToken', `JWT ${token}`);
+                // ctx.cookies.set('myToken', `JWT ${token}`);
+                // ctx.cookies.set('myUserName', user.displayName);
             }
         })(ctx);
     }
