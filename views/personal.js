@@ -9,29 +9,45 @@ define([
         {id: 'ru', value: _('russian')},
         {id: 'en', value: _('english')}
     ];
-    let langUi = {view: 'segmented',
+    let langUi = {
+        view: 'segmented',
         name: 'language',
         label: _('language'),
         options: languages,
-        optionWidth: 120,
-        click() { locales.setLang(this.getValue()); }
+        click() {
+            locales.setLang(this.getValue());
+        }
     };
 
     let themenames = [
         {id: 'siberia:webix', value: _('siberia')},
         {id: 'siberia:skins/compact', value: _('compact')}
     ];
-    let skinsUi = {view: 'segmented',
+    let skinsUi = {
+        view: 'segmented',
         name: 'theme',
         label: _('theme'),
         options: themenames,
-        optionWidth: 120,
-        click() { themes.setTheme(this.getValue()); }
+        click() {
+            console.log(themes);
+            console.log(this.getValue());
+
+            themes.setTheme(this.getValue());
+        }
     };
 
-    let personal = {view: 'form',
-        rows: [
-            {type: 'section', template: _('app_settings')},
+    let personal = {
+        view: 'form',
+        elementsConfig: {
+            labelPosition: 'left',
+            labelWidth: 150,
+            optionWidth: 200
+        },
+        elements: [
+            {
+                type: 'section',
+                template: _('app_settings')
+            },
             langUi,
             skinsUi,
             {}
