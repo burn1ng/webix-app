@@ -37,7 +37,9 @@ define([], () => (
         app_settings: 'Настройки приложения',
         wordgroups: 'Группы слов',
         del_all_rows: 'Удалить все слова',
-        load_message: 'Loading...',
-        empty_data: 'There is no data'
+        load_message: 'Загрузка данных...',
+        empty_data: 'Нет данных',
+        my_profile: 'Мой профиль',
+        logout: 'Выйти'
     }
 ));
