@@ -25,15 +25,15 @@ define([
             grid.hideOverlay();
         }
     }
-    function confirmDelete(grid, textMessage) {
+    function confirmDelete(grid, textMessage, successCallback, type) {
         webix.confirm({
             text: textMessage,
-            type: 'confirm-warning',
+            type: type || 'confirm-warning',
             ok: _('yes'),
             cancel: _('cancel'),
             callback(res) {
                 if (res) {
-                    deleteRow(grid);
+                    successCallback(grid);
                 }
             }
         });
@@ -102,14 +102,13 @@ define([
         }
     }, webix.ui.datafilter.textFilter);
 
-    let toolbar = {
-        id: 'toolbarForDatatable',
+    let gridTopToolbar = {
+        id: 'gridTopToolbar',
         view: 'toolbar',
-        height: 66,
         elements: [
             {view: 'button',
                 autowidth: true,
-                type: 'iconButtonTop',
+                type: 'iconButton',
                 icon: 'calendar-plus-o',
                 label: _('add_row'),
                 click() {
@@ -118,21 +117,28 @@ define([
             },
             {view: 'button',
                 autowidth: true,
-                type: 'iconButtonTop',
+                type: 'iconButton',
                 icon: 'calendar-minus-o',
                 label: _('del_row'),
                 click() {
-                    confirmDelete($$('gridDatatable'), _('selected_words_confirm_delete'));
-                    // deleteRow($$('gridDatatable'));
+                    let selectedItems = $$('gridDatatable').getState().select.length;
+
+                    if (selectedItems > 1) {
+                        confirmDelete($$('gridDatatable'), _('selected_words_confirm_delete'), deleteRow);
+                    }
+                    else if (selectedItems === 1) {
+                        confirmDelete($$('gridDatatable'), _('word_confirm_delete'), deleteRow);
+                    }
                 }},
             {},
             {
-                view: 'icon',
+                view: 'button',
+                type: 'icon',
                 icon: 'calendar-times-o',
-                tooltip: _('del_all_rows'),
+                label: _('del_all_rows'),
                 autowidth: true,
                 click() {
-                    deleteAllRows($$('gridDatatable'));
+                    confirmDelete($$('gridDatatable'), _('all_words_confirm_delete'), deleteAllRows, 'confirm-error');
                 }
             }
         ]
@@ -156,7 +162,7 @@ define([
         footer: true,
         onClick: {
             webix_icon() {
-                confirmDelete(this, _('word_confirm_delete'));
+                confirmDelete(this, _('word_confirm_delete'), deleteRow);
             }
 
         },
@@ -202,7 +208,7 @@ define([
                 editor: 'text',
                 header: [_('orig_word'), {content: 'customTextFilter', placeholder: _('find_word')}],
                 sort: 'string',
-                footer: {text: _('words_amount'), colspan: 3, css: 'sample_footer'}
+                footer: {text: _('words_amount'), colspan: 4, css: 'sample_footer'}
             },
             {
                 id: 'translationWord',
@@ -232,10 +238,10 @@ define([
         ]
     };
 
-    let dtFooterToolbar = {
-        id: 'exportToolbar',
+    let gridBottomToolbar = {
+        id: 'gridBottomToolbar',
         view: 'toolbar',
-        height: 66,
+        height: 46,
         elements: [
             {
                 view: 'button',
@@ -276,14 +282,21 @@ define([
                 click() {
                     webix.toExcel($$('gridDatatable'), {
                         filename: 'myVocabulary',
-                        name: 'English words'
+                        name: 'English words',
+                        filterHTML: true,
+                        columns: {
+                            index: {header: '#'},
+                            originalWord: {header: _('orig_word'), width: 350},
+                            translationWord: {header: _('translation'), width: 400},
+                            partOfSpeech: {header: _('part_of_speech'), width: 200}
+                        }
                     });
                 }
             },
             {},
             {
                 view: 'button',
-                type: 'iconButtonTop',
+                type: 'iconButton',
                 icon: 'cog',
                 label: _('test_generate'),
                 autowidth: true,
@@ -295,42 +308,44 @@ define([
     };
 
     let ui = {
+        view: 'layout',
+        id: 'wordsTable',
         rows: [
-            toolbar,
+            gridTopToolbar,
             grid,
-            dtFooterToolbar
+            gridBottomToolbar
         ]
     };
 
     return {
-        $ui: ui,
-        $oninit: (view, $scope) => {
-            // let popup = $scope.ui({
-            //     view: 'popup',
-            //     position: 'center',
-            //     body: 'New word added to your vocabulary and saved.'
-            // });
-            // $scope.on(words.arrayOfWords, 'onDataUpdate', () => {
-            //     popup.show();
-            // });
-            // $$('gridDatatable').data.sync(words.arrayOfWords);
+        $ui: ui
+        // $oninit: (view, $scope) => {
+        // let popup = $scope.ui({
+        //     view: 'popup',
+        //     position: 'center',
+        //     body: 'New word added to your vocabulary and saved.'
+        // });
+        // $scope.on(words.arrayOfWords, 'onDataUpdate', () => {
+        //     popup.show();
+        // });
+        // $$('gridDatatable').data.sync(words.arrayOfWords);
 
 
-            // $$('gridDatatable').parse(data);
+        // $$('gridDatatable').parse(data);
 
 
-            // words.arrayOfWords.attachEvent('onBeforeLoad', () => {
-            //     $$('gridDatatable').showOverlay('Loading...');
-            // });
-            // words.arrayOfWords.attachEvent('onAfterLoad', () => {
-            //     showDataStatus($$('gridDatatable'));
-            // });
-            // words.arrayOfWords.attachEvent('onAfterDelete', () => {
-            //     showDataStatus($$('gridDatatable'));
-            // });
-            // words.arrayOfWords.attachEvent('onAfterAdd', () => {
-            //     showDataStatus($$('gridDatatable'));
-            // });
-        }
+        // words.arrayOfWords.attachEvent('onBeforeLoad', () => {
+        //     $$('gridDatatable').showOverlay('Loading...');
+        // });
+        // words.arrayOfWords.attachEvent('onAfterLoad', () => {
+        //     showDataStatus($$('gridDatatable'));
+        // });
+        // words.arrayOfWords.attachEvent('onAfterDelete', () => {
+        //     showDataStatus($$('gridDatatable'));
+        // });
+        // words.arrayOfWords.attachEvent('onAfterAdd', () => {
+        //     showDataStatus($$('gridDatatable'));
+        // });
+        // }
     };
 });

@@ -4,7 +4,7 @@ define([], () => (
         russian: 'Russian',
         english: 'English',
         add_row: 'Add new word',
-        del_row: 'Delete selected word',
+        del_row: 'Delete selected words',
         orig_word: 'Original word',
         words_amount: 'words in wordgroup',
         find_word: 'Find word',
@@ -43,7 +43,9 @@ define([], () => (
         logout: 'Logout',
         word_confirm_delete: 'Word will be deleted.<br/> Are you sure?',
         selected_words_confirm_delete: 'Selected words will be deleted.<br/> Are you sure?',
+        all_words_confirm_delete: '<strong><span style="color:red;">All words in that word group</span></strong><br/> will be deleted.<br/> Are you sure?',
         yes: 'Yes',
-        cancel: 'Cancel'
+        cancel: 'Cancel',
+        wordgroup_header: 'Choose group of words'
     }
 ));

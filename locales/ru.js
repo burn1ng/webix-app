@@ -4,7 +4,7 @@ define([], () => (
         russian: 'Русский',
         english: 'Английский',
         add_row: 'Добавить новое слово',
-        del_row: 'Удалить выделенное слово',
+        del_row: 'Удалить выделенные слова',
         orig_word: 'Слово',
         words_amount: 'слов в группе',
         find_word: 'Найти слово',
@@ -43,7 +43,9 @@ define([], () => (
         logout: 'Выйти',
         word_confirm_delete: 'Слово будет удалено.<br/> Вы уверены?',
         selected_words_confirm_delete: 'Выделенные слова будут удалены.<br/> Вы уверены?',
+        all_words_confirm_delete: '<strong><span style="color:red;">Все слова в данной группе слов</span></strong><br/> будут удалены.<br/> Вы уверены?',
         yes: 'Да',
-        cancel: 'Отмена'
+        cancel: 'Отмена',
+        wordgroup_header: 'Выберите группу слов'
     }
 ));

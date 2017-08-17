@@ -13,6 +13,7 @@ define([
     let mainToolbar = {
         view: 'toolbar',
         id: 'mainToolbar',
+        // css: 'custom_theme_panel',
         elements: [
             {view: 'label', label: "<a href='#'><img class='photo' src='assets/imgs/logo.png' /></a>", width: 200},
             {
@@ -42,8 +43,8 @@ define([
         select: true,
         template: "<span class='webix_icon fa-#icon#'></span> #value# ",
         data: [
-            {value: _('dashboard'), id: 'start', href: '#!/top/dashboard', icon: 'envelope-o'},
-            {value: _('test_results'), id: 'data', href: '#!/top/wordsTable', icon: 'briefcase'},
+            {value: _('dashboard'), id: 'dashboard', href: '#!/top/dashboard', icon: 'envelope-o'},
+            {value: _('test_results'), id: 'wordsTable', href: '#!/top/wordsTable', icon: 'briefcase'},
             {value: _('settings'), id: 'settings', href: '#!/top/settings/personal', icon: 'cog'}
         ]
     };
@@ -67,7 +68,7 @@ define([
                             height: 10
                         },
                         {
-                            type: 'clean',
+                            type: 'form',
                             css: 'app-right-panel',
                             padding: 4,
                             rows: [

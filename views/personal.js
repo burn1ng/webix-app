@@ -1,9 +1,8 @@
 define([
     'libs/webix-jet-core/plugins/locale',
     'libs/webix-jet-core/plugins/theme',
-    'models/langState',
     'locale'
-], (locales, themes, langState, _) => {
+], (locales, themes, _) => {
     let languages = [
         {id: 'ru', value: _('russian')},
         {id: 'en', value: _('english')}

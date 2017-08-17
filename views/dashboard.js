@@ -2,7 +2,12 @@ define([
     'views/wordsTable',
     'locale'
 ], (wordsTable, _) => {
+    let header = {
+        type: 'header',
+        template: _('wordgroup_header')
+    };
     let list = {
+        id: 'dashboard:list',
         view: 'list',
         data: ['Users', 'Reports', 'Settings'],
         ready() {
@@ -13,10 +18,10 @@ define([
         width: 250
     };
 
-    let testForm = {
+    let form = {
         view: 'form',
+        id: 'dashboard:form',
         rows: [
-            {view: 'label', label: _('wordgroup_name_label'), align: 'center'},
             {view: 'text', placeholder: _('wordgroup_name_placeholder'), name: 'wordgroupName'},
             {cols: [
                 {view: 'button', label: _('add'), type: 'form'},
@@ -31,36 +36,26 @@ define([
             {
                 type: 'form',
                 padding: 0,
-                responsive: 'dashboard',
                 cols: [
-                    {rows: [
-                        testForm,
-                        list
-                    ]},
-
+                    {
+                        rows: [
+                            header,
+                            list,
+                            form
+                        ]
+                    },
                     {view: 'resizer'},
-                    // {template: 'column 2', width: 200},
                     wordsTable
                 ]
             }
-
         ]
     };
 
     return {
         $ui: ui,
+        $menu: 'dashboard:list',
         $oninit: (view, $scope) => {
-            let popup = $scope.ui({
-                view: 'popup',
-                position: 'center',
-                body: 'New word added to your vocabulary and saved.'
-            });
 
-            // $scope.on(words.arrayOfWords, 'onDataUpdate', () => {
-            //     popup.show();
-            // });
-
-            // $$('gridDatatable').parse(words.arrayOfWords);
         }
     };
 });
