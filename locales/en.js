@@ -4,7 +4,7 @@ define([], () => (
         russian: 'Russian',
         english: 'English',
         add_row: 'Add new word',
-        del_row: 'Delete word',
+        del_row: 'Delete selected word',
         orig_word: 'Original word',
         words_amount: 'words in wordgroup',
         find_word: 'Find word',
@@ -40,6 +40,10 @@ define([], () => (
         load_message: 'Loading...',
         empty_data: 'There is no data',
         my_profile: 'My profile',
-        logout: 'Logout'
+        logout: 'Logout',
+        word_confirm_delete: 'Word will be deleted.<br/> Are you sure?',
+        selected_words_confirm_delete: 'Selected words will be deleted.<br/> Are you sure?',
+        yes: 'Yes',
+        cancel: 'Cancel'
     }
 ));

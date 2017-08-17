@@ -1,10 +1,9 @@
 define([
-    'protected',
     'libs/webix-jet-core/plugins/locale',
     'libs/webix-jet-core/plugins/theme',
     'models/langState',
     'locale'
-], (app, locales, themes, langState, _) => {
+], (locales, themes, langState, _) => {
     let languages = [
         {id: 'ru', value: _('russian')},
         {id: 'en', value: _('english')}

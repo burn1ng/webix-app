@@ -7,6 +7,12 @@ define([
             id: 'personal',
             href: '#!/app/settings/personal',
             icon: 'home'
+        },
+        {
+            value: _('other'),
+            id: 'other',
+            href: '#!/app/settings/other',
+            icon: 'cogs'
         }
     ];
 

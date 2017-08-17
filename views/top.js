@@ -38,7 +38,6 @@ define([
         view: 'menu',
         id: 'top:menu',
         width: 180,
-        margin: 1,
         layout: 'y',
         select: true,
         template: "<span class='webix_icon fa-#icon#'></span> #value# ",
