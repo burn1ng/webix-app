@@ -39,6 +39,6 @@ define([
 
     app.use(menu);
     app.use(theme);
-    app.use(locale);
+    app.use(locale, {lang: 'en'});
     return app;
 });
