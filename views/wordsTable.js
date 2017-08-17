@@ -25,6 +25,19 @@ define([
             grid.hideOverlay();
         }
     }
+    function confirmDelete(grid, textMessage) {
+        webix.confirm({
+            text: textMessage,
+            type: 'confirm-warning',
+            ok: _('yes'),
+            cancel: _('cancel'),
+            callback(res) {
+                if (res) {
+                    deleteRow(grid);
+                }
+            }
+        });
+    }
 
     // custom proxy for datatable editing in row, and upload ALL changes in 1 call to server
     webix.proxy.restWithDataProcessorDelay = {
@@ -109,7 +122,8 @@ define([
                 icon: 'calendar-minus-o',
                 label: _('del_row'),
                 click() {
-                    deleteRow($$('gridDatatable'));
+                    confirmDelete($$('gridDatatable'), _('selected_words_confirm_delete'));
+                    // deleteRow($$('gridDatatable'));
                 }},
             {},
             {
@@ -140,6 +154,12 @@ define([
         multiselect: true,
         editaction: 'dblclick',
         footer: true,
+        onClick: {
+            webix_icon() {
+                confirmDelete(this, _('word_confirm_delete'));
+            }
+
+        },
         on: {
             'data->onStoreUpdated': function () {
                 this.data.each((obj, i) => {
@@ -207,7 +227,8 @@ define([
                     {id: 8, value: _('interjection')}
                 ],
                 sort: 'string'
-            }
+            },
+            {id: 'trash', header: '&nbsp;', width: 35, template: "<span  style='color:#777777; cursor:pointer;' class='webix_icon fa-trash-o'></span>"}
         ]
     };
 
