@@ -26,32 +26,6 @@ define([
         }
     }
 
-    // let data = [{originalWord: 'Hawk-eagle, crowned', translationWord: 'Gigashots', partOfSpeech: 3},
-    //     {originalWord: 'Kangaroo, red', translationWord: 'Yakidoo', partOfSpeech: 1},
-    //     {originalWord: "Verreaux's sifaka", translationWord: 'Realfire', partOfSpeech: 5},
-    //     {originalWord: 'White rhinoceros', translationWord: 'Jetpulse', partOfSpeech: 4},
-    //     {originalWord: 'Badger, honey', translationWord: 'Quire', partOfSpeech: 7},
-    //     {originalWord: 'Cardinal, black-throated', translationWord: 'Browsedrive', partOfSpeech: 2},
-    //     {originalWord: 'Aardwolf', translationWord: 'Twitternation', partOfSpeech: 1},
-    //     {originalWord: 'Partridge, coqui', translationWord: 'Rhybox', partOfSpeech: 3},
-    //     {originalWord: 'Red-necked wallaby', translationWord: 'Jaxnation', partOfSpeech: 8},
-    //     {originalWord: 'Kite, black', translationWord: 'Tagchat', partOfSpeech: 6},
-    //     {originalWord: 'Pygmy possum', translationWord: 'Ozu', partOfSpeech: 8},
-    //     {originalWord: 'Mynah, indian', translationWord: 'Lazzy', partOfSpeech: 2},
-    //     {originalWord: 'Owl, great horned', translationWord: 'Edgeblab', partOfSpeech: 6},
-    //     {originalWord: 'Coqui partridge', translationWord: 'Kamba', partOfSpeech: 3},
-    //     {originalWord: 'Glossy ibis', translationWord: 'Kaymbo', partOfSpeech: 5},
-    //     {originalWord: 'Weaver, white-browed sparrow', translationWord: 'Omba', partOfSpeech: 7},
-    //     {originalWord: 'Sandhill crane', translationWord: 'Wikizz', partOfSpeech: 1},
-    //     {originalWord: 'Common turkey', translationWord: 'Buzzshare', partOfSpeech: 1},
-    //     {originalWord: 'Leopard', translationWord: 'Browsezoom', partOfSpeech: 2},
-    //     {originalWord: 'Baboon, yellow', translationWord: 'Skinte', partOfSpeech: 8},
-    //     {originalWord: 'Waxbill, black-cheeked', translationWord: 'Mudo', partOfSpeech: 4},
-    //     {originalWord: 'King vulture', translationWord: 'Camimbo', partOfSpeech: 3},
-    //     {originalWord: 'Antelope, sable', translationWord: 'Dabshots', partOfSpeech: 4},
-    //     {originalWord: 'Grey fox', translationWord: 'Meejo', partOfSpeech: 5},
-    //     {originalWord: 'Marmot, yellow-bellied', translationWord: 'Zoombeat', partOfSpeech: 1}];
-
     // custom proxy for datatable editing in row, and upload ALL changes in 1 call to server
     webix.proxy.restWithDataProcessorDelay = {
         $proxy: true,
@@ -127,7 +101,8 @@ define([
                 label: _('add_row'),
                 click() {
                     addRow($$('gridDatatable'));
-                }},
+                }
+            },
             {view: 'button',
                 autowidth: true,
                 type: 'iconButtonTop',
@@ -150,7 +125,7 @@ define([
 
     let grid = {
         id: 'gridDatatable',
-        url: 'api/getWords', // simple load data
+        url: 'api/getWords',
         save: {
             url: 'restWithDataProcessorDelay->/api/word', // custom proxy
             updateFromResponse: true
@@ -162,12 +137,9 @@ define([
         select: 'row',
         scroll: 'y',
         multiselect: true,
-        editaction: 'custom',
+        editaction: 'dblclick',
         footer: true,
         on: {
-            onItemDblClick(id) {
-                this.editRow(id);
-            },
             'data->onStoreUpdated': function () {
                 this.data.each((obj, i) => {
                     obj.index = i + 1;
@@ -184,12 +156,18 @@ define([
             },
             onAfterAdd() {
                 showDataStatus(this);
+                // cancel prev edit, open editor on all cells simultaneously and focus on the first column (not index)
+                this.editCancel();
+                let id = this.getLastId();
+                this.editRow(id);
+                this.getEditor({row: id, column: 'originalWord'}).focus();
             }
         },
         columns: [
             {
                 id: 'index',
                 header: '№',
+                editor: false,
                 adjust: true,
                 footer: {content: 'customSummColumn', css: 'sample_footer'}
             },
@@ -231,30 +209,35 @@ define([
     let dtFooterToolbar = {
         id: 'exportToolbar',
         view: 'toolbar',
+        height: 66,
         elements: [
             {
                 view: 'button',
                 type: 'iconButton',
-                icon: 'file-image-o',
+                icon: 'trophy',
                 label: _('test_results'),
-                adjust: true,
+                autowidth: true,
                 click() {
                     // TODO
                 }
             },
             {},
             {
-                view: 'icon',
-                tooltip: _('png_export'),
+                view: 'button',
+                type: 'icon',
                 icon: 'file-image-o',
+                label: _('png_export'),
+                autowidth: true,
                 click() {
                     webix.toPNG($$('gridDatatable'), 'my_vocabulary');
                 }
             },
             {
-                view: 'icon',
-                tooltip: _('pdf_export'),
+                view: 'button',
+                type: 'icon',
                 icon: 'file-pdf-o',
+                label: _('pdf_export'),
+                autowidth: true,
                 click() {
                     webix.toPDF($$('gridDatatable'), {
                         filename: 'myVocabulary'
@@ -262,10 +245,11 @@ define([
                 }
             },
             {
-                view: 'icon',
-                tooltip: _('excel_export'),
+                view: 'button',
+                type: 'icon',
                 icon: 'file-excel-o',
                 label: _('excel_export'),
+                autowidth: true,
                 click() {
                     webix.toExcel($$('gridDatatable'), {
                         filename: 'myVocabulary',
@@ -276,9 +260,10 @@ define([
             {},
             {
                 view: 'button',
-                type: 'iconButton',
+                type: 'iconButtonTop',
                 icon: 'cog',
                 label: _('test_generate'),
+                autowidth: true,
                 click() {
                     // TODO
                 }
