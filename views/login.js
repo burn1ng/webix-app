@@ -60,9 +60,11 @@ define([
                     success(text, data, xhr) {
                         console.log('login - OK');
                         if (xhr.status === 200) {
-                            console.log(xhr);
                             let receivedToken = JSON.parse(xhr.response).token;
+                            let receivedName = JSON.parse(xhr.response).user;
+
                             localStorage.setItem('token', receivedToken);
+                            localStorage.setItem('userName', receivedName);
 
                             webix.ajax().headers({
                                 Authorization: receivedToken
