@@ -8,7 +8,8 @@ module.exports = async (ctx, next) => {
         else {
             ctx.status = 401;
             ctx.body = 'access denied, please log in again or register';
-            ctx.redirect('/');
+            // ctx.redirect('/');
+            console.log(ctx.request.body);
         }
     })(ctx, next);
 };

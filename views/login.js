@@ -9,8 +9,8 @@ define([
                 {},
                 {
                     view: 'form',
-                    width: 350,
-                    id: 'log_form',
+                    maxWidth: 400,
+                    id: 'loginForm',
                     elementsConfig: {
                         labelAlign: 'right',
                         labelWidth: 90,
@@ -38,29 +38,29 @@ define([
                                         label: 'Email',
                                         placeholder: 'Your e-mail',
                                         validate: webix.rules.isEmail,
-                                        invalidMessage: '* Please, provide correct e-mail'
+                                        invalidMessage: ' Please, provide correct e-mail'
                                     },
                                     {
                                         view: 'text',
                                         type: 'password',
-                                        required: true,
                                         name: 'password',
                                         label: 'Password',
                                         placeholder: 'Your password',
-                                        invalidMessage: 'Sorry, but password can\'t be empty'
+                                        invalidMessage: ' Sorry, but password can\'t be empty'
                                     }
                                 ]
                             }},
                         {
                             margin: 5,
                             cols: [
-                                {view: 'button',
+                                {
+                                    view: 'button',
                                     id: 'loginButton',
                                     value: 'Login',
                                     type: 'form',
                                     click() {
-                                        if ($$('log_form').validate()) {
-                                            $$('log_form').callEvent('onSubmit');
+                                        if ($$('loginForm').validate()) {
+                                            $$('loginForm').callEvent('onSubmit');
                                         }
                                     }
                                 },
@@ -68,10 +68,15 @@ define([
                                     view: 'button',
                                     value: 'Cancel',
                                     click() {
-                                        $$('log_form').clearValidation();
+                                        $$('loginForm').clearValidation();
                                     }
                                 }
                             ]
+                        },
+                        {
+                            view: 'label',
+                            template: "<a href='#!/signup'>Need an account? Sign up here</a>",
+                            align: 'center'
                         }
                     ]
                 },
@@ -85,36 +90,41 @@ define([
     return {
         $ui: ui,
         $oninit: () => {
-            const loginForm = $$('log_form');
+            const loginForm = $$('loginForm');
 
             loginForm.attachEvent('onSubmit', () => {
-                let getTokenPromise = webix.ajax().post('/api/login', $$('log_form').getValues());
-                let loginPromise = webix.ajax().post('/dashboard');
+                let getTokenPromise = webix.ajax().post('/api/login', $$('loginForm').getValues());
 
                 getTokenPromise.then((response) => {
                     let data = response.json();
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('userName', data.user);
 
+                    // inner promise uses setted token from localstorage, cannot be done without it
+                    let loginPromise = webix.ajax().headers({
+                        Authorization: localStorage.getItem('token')
+                    }).post('/dashboard');
                     loginPromise.then(() => {
                         window.location.href = '/protected.html';
-                    }).fail((err) => {
+                    });
+                    loginPromise.fail((err) => {
                         if (err.status === 500) {
-                            webix.message(`Wooops. Application is unavailable now. Please, try later. \n Error: ${err.response}`);
+                            webix.message(`Wooops. Application is unavailable now. Please, try later. Error: ${err.response}`);
                         }
                         else {
+                            // if token which is just setted is wrong, looks like a hack attack! =)
                             localStorage.removeItem('token');
                             localStorage.removeItem('userName');
-                            webix.message(`Something went wrong. \n Error: ${err.response} \n Please, login again`);
+                            webix.message(`Something went wrong. Error: ${err.response} Please, login again`);
                         }
                     });
-                }).fail((err) => {
+                });
+                getTokenPromise.fail((err) => {
                     if (err.status === 401) {
-                        webix.message(`Wooops. Your login/password are incorrect. ${err.response}`);
-                        webix.message('Please, login again');
+                        webix.message(`Wooops. Your login/password are incorrect. Error: ${err.response} Please, login again`);
                     }
                     else if (err.status === 500) {
-                        webix.message(`Wooops. Application is unavailable now. Please, try later. \n Error: ${err.response}`);
+                        webix.message(`Wooops. Application is unavailable now. Please, try later. Error: ${err.response}`);
                     }
                 });
             });
