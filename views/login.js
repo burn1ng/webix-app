@@ -14,7 +14,12 @@ define([
                     elementsConfig: {
                         labelAlign: 'right',
                         labelWidth: 90,
-                        bottomPadding: 18
+                        bottomPadding: 18,
+                        on: {
+                            onChange() {
+                                this.validate();
+                            }
+                        }
                     },
                     elements: [
                         {
@@ -33,34 +38,39 @@ define([
                                         label: 'Email',
                                         placeholder: 'Your e-mail',
                                         validate: webix.rules.isEmail,
-                                        invalidMessage: '* Please, provide correct e-mail',
-                                        on: {
-                                            onChange() {
-                                                this.validate();
-                                            }
-                                        }
+                                        invalidMessage: '* Please, provide correct e-mail'
                                     },
                                     {
                                         view: 'text',
                                         type: 'password',
+                                        required: true,
                                         name: 'password',
                                         label: 'Password',
                                         placeholder: 'Your password',
-                                        minlength: '8',
-                                        invalidMessage: 'Sorry, but password can\'t be empty',
-                                        on: {
-                                            onKeyPress() {
-                                                this.validate();
-                                            }
-                                        }
+                                        invalidMessage: 'Sorry, but password can\'t be empty'
                                     }
                                 ]
                             }},
                         {
                             margin: 5,
                             cols: [
-                                {view: 'button', icon: 'sign-in', label: 'Login', type: 'iconButton', id: 'loginButton'},
-                                {view: 'button', value: 'Cancel'}
+                                {view: 'button',
+                                    id: 'loginButton',
+                                    value: 'Login',
+                                    type: 'form',
+                                    click() {
+                                        if ($$('log_form').validate()) {
+                                            $$('log_form').callEvent('onSubmit');
+                                        }
+                                    }
+                                },
+                                {
+                                    view: 'button',
+                                    value: 'Cancel',
+                                    click() {
+                                        $$('log_form').clearValidation();
+                                    }
+                                }
                             ]
                         }
                     ]
@@ -76,41 +86,28 @@ define([
         $ui: ui,
         $oninit: () => {
             const loginForm = $$('log_form');
-            loginForm.elements.email.attachEvent('onChange', (newv, oldv) => {
-                webix.message(`Value changed from: ${oldv} to: ${newv}`);
-            });
 
             loginForm.attachEvent('onSubmit', () => {
-                webix.ajax().post('/api/login', $$('log_form').getValues(), {
-                    error(text, data, xhr) {
-                        if (xhr.status === 401) {
-                            webix.message(`Wooops. Your login/password are incorrect. ${xhr.response}`);
-                        }
-                        else if (xhr.status === 500) {
-                            webix.message(`Wooops. Application is unavailable now. Please, try later. \n Error: ${xhr.response}`);
-                        }
-                        // setTimeout(() => {
-                        //     window.location.href = '/public.html';
-                        // }, 4000);
-                    },
-                    success(text, data, xhr) {
-                        console.log('login - OK');
-                        if (xhr.status === 200) {
-                            let receivedToken = JSON.parse(xhr.response).token;
-                            let receivedName = JSON.parse(xhr.response).user;
+                let getTokenPromise = webix.ajax().post('/api/login', $$('log_form').getValues());
+                let loginPromise = webix.ajax().headers(
+                    {Authorization: localStorage.getItem('token')}
+                ).post('/dashboard');
 
-                            localStorage.setItem('token', receivedToken);
-                            localStorage.setItem('userName', receivedName);
+                getTokenPromise.then((response) => {
+                    let data = response.json();
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userName', data.user);
 
-                            webix.ajax().headers({
-                                Authorization: receivedToken
-                            }).post('/dashboard', (text2, data2, xhr2) => {
-                                console.log(xhr2);
-                                if (xhr2.status === 200) {
-                                    window.location.href = '/protected.html';
-                                }
-                            });
-                        }
+                    loginPromise.then(() => {
+                        window.location.href = '/protected.html';
+                    });
+                }).fail((err) => {
+                    if (err.status === 401) {
+                        webix.message(`Wooops. Your login/password are incorrect. ${err.response}`);
+                        webix.message('Please, login again');
+                    }
+                    else if (err.status === 500) {
+                        webix.message(`Wooops. Application is unavailable now. Please, try later. \n Error: ${err.response}`);
                     }
                 });
             });
