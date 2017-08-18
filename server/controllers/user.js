@@ -37,7 +37,7 @@ module.exports = {
             if (err) {
                 ctx.body = 'Error login route';
             }
-            if (user == false) {
+            if (user === false) {
                 ctx.status = 401;
                 ctx.body = 'Login failed';
             }
