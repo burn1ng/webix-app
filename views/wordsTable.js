@@ -121,7 +121,7 @@ define([
                 icon: 'calendar-minus-o',
                 label: _('del_row'),
                 click() {
-                    let selectedItems = $$('gridDatatable').getState().select.length;
+                    let selectedItems = $$('gridDatatable').getSelectedId(true, true).length;
 
                     if (selectedItems > 1) {
                         confirmDelete($$('gridDatatable'), _('selected_words_confirm_delete'), deleteRow);
@@ -320,19 +320,8 @@ define([
     return {
         $ui: ui
         // $oninit: (view, $scope) => {
-        // let popup = $scope.ui({
-        //     view: 'popup',
-        //     position: 'center',
-        //     body: 'New word added to your vocabulary and saved.'
-        // });
-        // $scope.on(words.arrayOfWords, 'onDataUpdate', () => {
-        //     popup.show();
-        // });
         // $$('gridDatatable').data.sync(words.arrayOfWords);
-
-
         // $$('gridDatatable').parse(data);
-
 
         // words.arrayOfWords.attachEvent('onBeforeLoad', () => {
         //     $$('gridDatatable').showOverlay('Loading...');

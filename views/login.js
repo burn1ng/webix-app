@@ -89,9 +89,7 @@ define([
 
             loginForm.attachEvent('onSubmit', () => {
                 let getTokenPromise = webix.ajax().post('/api/login', $$('log_form').getValues());
-                let loginPromise = webix.ajax().headers(
-                    {Authorization: localStorage.getItem('token')}
-                ).post('/dashboard');
+                let loginPromise = webix.ajax().post('/dashboard');
 
                 getTokenPromise.then((response) => {
                     let data = response.json();
