@@ -68,7 +68,7 @@ define([
                             height: 10
                         },
                         {
-                            type: 'form',
+                            type: 'clean',
                             css: 'app-right-panel',
                             padding: 4,
                             rows: [

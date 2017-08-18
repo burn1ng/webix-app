@@ -9,29 +9,61 @@ define([
                 {},
                 {
                     view: 'form',
-                    maxWidth: 300,
+                    width: 350,
                     id: 'log_form',
+                    elementsConfig: {
+                        labelAlign: 'right',
+                        labelWidth: 90,
+                        bottomPadding: 18
+                    },
                     elements: [
-                        {view: 'fieldset',
-                            label: 'Please, sign in',
+                        {
+                            type: 'header',
+                            template: 'Please, sign in'
+                        },
+                        {
+                            view: 'fieldset',
+                            label: 'Credentials',
                             body: {
                                 rows: [
-                                    {view: 'text', label: 'Email', name: 'email', placeholder: 'E-mail'},
-                                    {view: 'text', type: 'password', label: 'Password', name: 'password', placeholder: 'Password'}
+                                    {
+                                        view: 'text',
+                                        type: 'email',
+                                        name: 'email',
+                                        label: 'Email',
+                                        placeholder: 'Your e-mail',
+                                        validate: webix.rules.isEmail,
+                                        invalidMessage: '* Please, provide correct e-mail',
+                                        on: {
+                                            onChange() {
+                                                this.validate();
+                                            }
+                                        }
+                                    },
+                                    {
+                                        view: 'text',
+                                        type: 'password',
+                                        name: 'password',
+                                        label: 'Password',
+                                        placeholder: 'Your password',
+                                        minlength: '8',
+                                        invalidMessage: 'Sorry, but password can\'t be empty',
+                                        on: {
+                                            onKeyPress() {
+                                                this.validate();
+                                            }
+                                        }
+                                    }
                                 ]
                             }},
                         {
                             margin: 5,
                             cols: [
-                                {view: 'button', value: 'Login', type: 'form', id: 'loginButton'},
+                                {view: 'button', icon: 'sign-in', label: 'Login', type: 'iconButton', id: 'loginButton'},
                                 {view: 'button', value: 'Cancel'}
                             ]
                         }
-                    ],
-                    rules: {
-                        email: webix.rules.isEmail,
-                        login: webix.rules.isNotEmpty
-                    }
+                    ]
                 },
                 {}
             ]},
@@ -51,11 +83,15 @@ define([
             loginForm.attachEvent('onSubmit', () => {
                 webix.ajax().post('/api/login', $$('log_form').getValues(), {
                     error(text, data, xhr) {
-                        webix.message(`Wooops. Looks like a error: ${xhr.response}`);
-                        console.log('wrong username/password');
-                        setTimeout(() => {
-                            window.location.href = '/public.html';
-                        }, 4000);
+                        if (xhr.status === 401) {
+                            webix.message(`Wooops. Your login/password are incorrect. ${xhr.response}`);
+                        }
+                        else if (xhr.status === 500) {
+                            webix.message(`Wooops. Application is unavailable now. Please, try later. \n Error: ${xhr.response}`);
+                        }
+                        // setTimeout(() => {
+                        //     window.location.href = '/public.html';
+                        // }, 4000);
                     },
                     success(text, data, xhr) {
                         console.log('login - OK');
