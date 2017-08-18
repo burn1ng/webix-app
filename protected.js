@@ -27,12 +27,12 @@ define([
         }
     });
 
-    webix.attachEvent('onAjaxError', (requestObj) => {
+    webix.attachEvent('onAjaxError', () => {
         console.log('onAjaxError event fired');
         window.location.href = '/public.html';
     });
 
-    webix.attachEvent('onLoadError', (text, xml, xhttp, obj) => {
+    webix.attachEvent('onLoadError', () => {
         console.log('onLoadError event fired');
         window.location.href = '/public.html';
     });

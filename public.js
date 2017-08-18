@@ -16,7 +16,7 @@ define([
         start: '/login'
     });
 
-    webix.attachEvent('onBeforeAjax', (mode, url, data, request, headers, files, promise) => {
+    webix.attachEvent('onBeforeAjax', (mode, url, data, request, headers) => {
         console.log('onBeforeAjax event fired');
         headers.Authorization = localStorage.getItem('token');
     });
