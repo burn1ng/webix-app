@@ -13,7 +13,6 @@ define([
     let mainToolbar = {
         view: 'toolbar',
         id: 'mainToolbar',
-        // css: 'custom_theme_panel',
         elements: [
             {view: 'label', label: "<a href='#'><img class='photo' src='assets/imgs/logo.png' /></a>", width: 200},
             {
@@ -76,8 +75,7 @@ define([
                             ]
                         }
                     ]
-                }
-                ]
+                }]
             }
         ]
 

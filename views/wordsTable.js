@@ -106,7 +106,8 @@ define([
         id: 'gridTopToolbar',
         view: 'toolbar',
         elements: [
-            {view: 'button',
+            {
+                view: 'button',
                 autowidth: true,
                 type: 'iconButton',
                 icon: 'calendar-plus-o',
@@ -115,7 +116,8 @@ define([
                     addRow($$('gridDatatable'));
                 }
             },
-            {view: 'button',
+            {
+                view: 'button',
                 autowidth: true,
                 type: 'iconButton',
                 icon: 'calendar-minus-o',
