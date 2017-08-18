@@ -98,6 +98,15 @@ define([
 
                     loginPromise.then(() => {
                         window.location.href = '/protected.html';
+                    }).fail((err) => {
+                        if (err.status === 500) {
+                            webix.message(`Wooops. Application is unavailable now. Please, try later. \n Error: ${err.response}`);
+                        }
+                        else {
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('userName');
+                            webix.message(`Something went wrong. \n Error: ${err.response} \n Please, login again`);
+                        }
                     });
                 }).fail((err) => {
                     if (err.status === 401) {
