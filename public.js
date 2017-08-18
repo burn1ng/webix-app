@@ -21,16 +21,6 @@ define([
         headers.Authorization = localStorage.getItem('token');
     });
 
-    webix.attachEvent('onAjaxError', (requestObj) => {
-        console.log('onAjaxError event fired');
-        window.location.href = '/public.html';
-    });
-
-    webix.attachEvent('onLoadError', (text, xml, xhttp, obj) => {
-        console.log('onLoadError event fired');
-        window.location.href = '/public.html';
-    });
-
     app.use(menu);
     app.use(theme);
     app.use(locale);
