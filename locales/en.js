@@ -28,6 +28,7 @@ define([], () => (
         add: 'Add',
         remove: 'Remove',
         update: 'Update',
+        unselect: 'Unselect',
         wordgroup_name_label: 'Group name',
         wordgroup_name_placeholder: 'New group of words',
         dashboard: 'Dashboard',

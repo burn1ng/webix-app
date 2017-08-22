@@ -55,6 +55,9 @@ define([
                     url: 'rest->/api/wordgroup',
                     updateFromResponse: true
                 },
+                ready() {
+
+                },
                 on: {
                     'data->onStoreLoad': function () {
                         this.data.each((obj, i) => {
@@ -115,11 +118,23 @@ define([
                 ]
             },
             {
-                view: 'button',
-                label: _('update'),
-                click() {
-                    updateItemInMaster('wordGroupList:dataview', 'wordGroupName', 'formInputValue');
-                }
+                cols: [
+                    {
+                        view: 'button',
+                        label: _('update'),
+                        click() {
+                            updateItemInMaster('wordGroupList:dataview', 'wordGroupName', 'formInputValue');
+                        }
+                    },
+                    {
+                        view: 'button',
+                        label: _('unselect'),
+                        click() {
+                            $$('wordGroupList:dataview').unselectAll();
+                            $$('gridDatatable').clearAll();
+                        }
+                    }
+                ]
             }
         ]
     };

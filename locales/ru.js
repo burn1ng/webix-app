@@ -28,6 +28,7 @@ define([], () => (
         add: 'Добавить',
         remove: 'Удалить',
         update: 'Обновить',
+        unselect: 'Сброс',
         wordgroup_name_label: 'Имя группы',
         wordgroup_name_placeholder: 'Новая группа слов',
         dashboard: 'Кабинет пользователя',
