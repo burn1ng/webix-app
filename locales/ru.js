@@ -27,6 +27,7 @@ define([], () => (
         test_generate: 'Сгенерировать тест!',
         add: 'Добавить',
         remove: 'Удалить',
+        update: 'Обновить',
         wordgroup_name_label: 'Имя группы',
         wordgroup_name_placeholder: 'Новая группа слов',
         dashboard: 'Кабинет пользователя',

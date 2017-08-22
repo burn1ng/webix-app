@@ -27,6 +27,7 @@ define([], () => (
         test_generate: 'Generate test!',
         add: 'Add',
         remove: 'Remove',
+        update: 'Update',
         wordgroup_name_label: 'Group name',
         wordgroup_name_placeholder: 'New group of words',
         dashboard: 'Dashboard',
