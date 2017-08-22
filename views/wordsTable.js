@@ -1,7 +1,7 @@
 define([
-    'models/words',
+    // 'models/words',
     'locale'
-], (words, _) => {
+], (_) => {
     function addRow(grid) {
         grid.add({originalWord: 'New word', translationWord: '', partOfSpeech: 0});
     }
