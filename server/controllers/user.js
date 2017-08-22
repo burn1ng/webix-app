@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const User = require('../models/users');
 // const fs = require('fs');
 const passport = require('koa-passport');
 const jwt = require('jsonwebtoken'); // auth for http by JWT
@@ -22,10 +22,8 @@ module.exports = {
     //     ctx.type = 'text/html; charset=utf-8';
     //     ctx.body = await readFileThunk('./protected.html');
     // },
-    // CREATE
     async createUser(ctx) {
         try {
-            console.log(ctx.request);
             let user = await User.create(ctx.request.body);
             ctx.body = {displayName: user.displayName};
             ctx.status = 200;
@@ -34,30 +32,31 @@ module.exports = {
             ctx.throw(400, 'User creation is failed', {err});
         }
     },
-    // ?READ
     async loginUser(ctx) {
-        await passport.authenticate('local', (err, user) => {
-            if (err) {
-                ctx.body = 'Error login route';
-            }
-            if (user === false) {
-                ctx.status = 401;
-                ctx.body = 'Login failed';
-            }
-            else {
-                // payload - information in token, which we can get
-                const payload = {
-                    id: user.id,
-                    displayName: user.displayName,
-                    email: user.email
-                };
-                const token = jwt.sign(payload, jwtsecret); // creating JWT here
+        try {
+            await passport.authenticate('local', (err, user) => {
+                if (user === false) {
+                    ctx.status = 401;
+                    ctx.body = 'Login failed';
+                }
+                else {
+                    // payload - information in token, which we can get
+                    const payload = {
+                        id: user.id,
+                        displayName: user.displayName,
+                        email: user.email
+                    };
+                    const token = jwt.sign(payload, jwtsecret); // creating JWT here
 
-                ctx.status = 200;
-                ctx.body = {user: user.displayName, token: `JWT ${token}`};
-                // ctx.cookies.set('myToken', `JWT ${token}`);
-                // ctx.cookies.set('myUserName', user.displayName);
+                    ctx.status = 200;
+                    ctx.body = {user: user.displayName, token: `JWT ${token}`};
+                }
+            })(ctx);
+        }
+        catch (err) {
+            if (err) {
+                ctx.throw(500, 'User login is failed', {err});
             }
-        })(ctx);
+        }
     }
 };

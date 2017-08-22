@@ -1,4 +1,4 @@
-const WordGroup = require('../models/wordgroup');
+const WordGroup = require('../models/wordgroups');
 
 module.exports = {
     // CREATE
@@ -7,6 +7,8 @@ module.exports = {
             console.log(ctx);
             ctx.body = await WordGroup.create({
                 wordGroupName: ctx.request.body.wordGroupName,
+                createdAt: ctx.request.body.createdAt,
+                updatedAt: ctx.request.body.updatedAt,
                 userId: ctx.request.user.id
             });
         }

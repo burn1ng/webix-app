@@ -1,6 +1,6 @@
 const JwtStrategy = require('passport-jwt').Strategy; // авторизация через JWT
 const ExtractJwt = require('passport-jwt').ExtractJwt; // авторизация через JWT
-const User = require('../models/user');
+const User = require('../models/users');
 const jwtsecret = require('../config/app').jwt;
 
 const jwtOptions = {

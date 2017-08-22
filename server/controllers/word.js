@@ -1,4 +1,4 @@
-const Word = require('../models/word');
+const Word = require('../models/words');
 
 module.exports = {
     // CREATE
