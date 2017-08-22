@@ -1,28 +1,39 @@
 define([
     'views/wordsTable',
+    // 'models/wordgroups',
     'locale'
 ], (wordsTable, _) => {
     function addItemToMaster(masterView, changingFieldName, inputId) {
         let item = {
-            rank: $$(masterView).count() + 1
+            rank: $$(masterView).count() + 1,
+            count: 0, // there is ZERO words in wordgroup when we create it
+            createdAt: new Date().toLocaleString('en-US'),
+            updatedAt: new Date().toLocaleString('en-US')
         };
-        item[changingFieldName] = $$(inputId).getValue();
+
+        item[changingFieldName] = $$(inputId).getValue() || _('wordgroup_name_placeholder');
         $$(masterView).add(item);
     }
+
     function removeItemFromMaster(masterView) {
         let selectedItems = $$(masterView).getSelectedId(true);
+
         if (!selectedItems) return;
+
         for (let i = 0; i < selectedItems.length; i++) {
             $$(masterView).remove(selectedItems[i]);
         }
     }
-    function updateItemInMaster(masterView, slaveInputId, updatingField) {
+    function updateItemInMaster(masterView, changingFieldName, inputId) {
         let selectedItems = $$(masterView).getSelectedId(true);
+
         if (!selectedItems) return;
-        let value = document.getElementById(slaveInputId).value;
+
         for (let i = 0; i < selectedItems.length; i++) {
             let item = $$(masterView).getItem(selectedItems[i]);
-            item[updatingField] = value;
+
+            item[changingFieldName] = $$(inputId).getValue() || _('wordgroup_name_placeholder');
+            item.updatedAt = new Date().toLocaleString('en-US');
             $$(masterView).updateItem(selectedItems[i], item);
         }
     }
@@ -38,24 +49,23 @@ define([
                 id: 'wordGroupList:dataview',
                 view: 'dataview',
                 select: 'multiselect',
-                scroll: false,
                 width: 250,
-                url: 'rest->api/getWordGroups',
-                // save: {
-                //     url: 'rest->api/wordgroup',
-                //     updateFromResponse: true
-                // },
-                // ready() {
-                //     this.select(this.getFirstId());
-                // },
+                url: 'api/getWordGroups',
+                save: {
+                    url: 'rest->/api/wordgroup',
+                    updateFromResponse: true
+                },
                 on: {
                     'data->onStoreLoad': function () {
                         this.data.each((obj, i) => {
-                            obj.rank = i + 1;
                             obj.count = obj.words.length;
+                        });
+                    },
+                    onItemRender() {
+                        this.data.each((obj, i) => {
+                            obj.rank = i + 1;
                             obj.createdAt = new Date(obj.createdAt).toLocaleString('en-US');
                             obj.updatedAt = new Date(obj.updatedAt).toLocaleString('en-US');
-                            console.log(obj);
                         });
                     }
                 },
@@ -68,7 +78,7 @@ define([
                     height: 'auto'
                 },
                 xCount: 1,
-                yCount: 8
+                yCount: 7
             }
         ]
     };
@@ -76,15 +86,11 @@ define([
     let wordGroupForm = {
         view: 'form',
         id: 'wordGroupForm:form',
-        save: {
-            url: 'rest->api/wordgroup'
-        },
         rows: [
             {
                 view: 'text',
                 id: 'formInputValue',
                 placeholder: _('wordgroup_name_placeholder'),
-                value: '',
                 name: 'wordgroupName'
             },
             {
@@ -107,6 +113,13 @@ define([
                         }
                     }
                 ]
+            },
+            {
+                view: 'button',
+                label: _('update'),
+                click() {
+                    updateItemInMaster('wordGroupList:dataview', 'wordGroupName', 'formInputValue');
+                }
             }
         ]
     };
@@ -135,6 +148,8 @@ define([
         $ui: ui,
         $menu: 'wordGroupList:dataview',
         $oninit: (view, $scope) => {
+            // $$('wordGroupList:dataview').parse(wordgroups.data);
+
             console.log($$('wordGroupList:dataview').data);
 
             $$('wordGroupList:dataview').attachEvent('onAfterSelect', function (id) {
@@ -144,9 +159,9 @@ define([
             });
 
             let dp = new webix.DataProcessor({
-                master: $$('wordGroupList:dataview'),
-                url: 'rest->api/getWordGroups'
+                master: $$('wordGroupList:dataview')
             });
         }
+
     };
 });
