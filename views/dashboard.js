@@ -8,14 +8,25 @@ define([
     };
     let list = {
         id: 'dashboard:list',
-        view: 'list',
-        data: ['Users', 'Reports', 'Settings'],
+        view: 'dataview',
+        type: {
+            height: 120
+        },
+        url: 'rest->api/getWordGroups',
         ready() {
             this.select(this.getFirstId());
         },
         select: true,
         scroll: false,
-        width: 250
+        on: {
+            'data->onStoreLoad': function () {
+                this.data.each((obj, i) => {
+                    obj.count = obj.words.length;
+                    console.log(obj);
+                });
+            }
+        },
+        template: '#wordGroupName# <div> Created: #createdAt#, <br /> Words: #count# </div>'
     };
 
     let form = {
@@ -24,7 +35,7 @@ define([
         rows: [
             {view: 'text', placeholder: _('wordgroup_name_placeholder'), name: 'wordgroupName'},
             {cols: [
-                {view: 'button', label: _('add'), type: 'form'},
+                {view: 'button', label: _('add'), name: 'wordGroupName', type: 'form'},
                 {view: 'button', label: _('remove'), type: 'danger'}
             ]}
         ]
@@ -55,7 +66,7 @@ define([
         $ui: ui,
         $menu: 'dashboard:list',
         $oninit: (view, $scope) => {
-
+            console.log($$('dashboard:list').data);
         }
     };
 });

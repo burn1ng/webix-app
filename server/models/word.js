@@ -6,6 +6,14 @@ const connection = mongoose.createConnection(db.url);
 autoIncrement.initialize(connection);
 
 const wordSchema = new mongoose.Schema({
+    userId: {
+        type: Number,
+        ref: 'User'
+    },
+    wordGroupId: {
+        type: Number,
+        ref: 'WordGroup'
+    },
     originalWord: {
         type: String,
         required: true,
@@ -17,11 +25,6 @@ const wordSchema = new mongoose.Schema({
     },
     partOfSpeech: {
         type: Number
-        // required: true
-    },
-    wordGroup: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'WordGroup'
     }
 }, {
     timestamps: true

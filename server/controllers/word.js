@@ -4,7 +4,15 @@ module.exports = {
     // CREATE
     async createWord(ctx) {
         try {
-            ctx.body = await Word.create(ctx.request.body);
+            ctx.body = await Word.create({
+                originalWord: ctx.request.body.originalWord,
+                userId: ctx.request.user.id
+            });
+            // push refs to children
+            // User.findById(ctx.request.user.id).exec((err, currentUser) => {
+            //     currentUser.words.push(word);
+            //     currentUser.save();
+            // });
         }
         catch (err) {
             ctx.throw(500, 'Problem with adding word in database', {err});
@@ -13,7 +21,15 @@ module.exports = {
     // READ
     async getWords(ctx) {
         try {
-            ctx.body = await Word.find({});
+            ctx.body = await Word.find({userId: ctx.request.user.id});
+            // if we use populate method, and words array in user
+            // User
+            //     .findById(ctx.request.user.id)
+            //     .populate('words') // only works if we pushed refs to children
+            //     .exec((err, person) => {
+            //         if (err) console.log(err);
+            //         console.log(person);
+            //     });
         }
         catch (err) {
             ctx.throw(500, 'Sorry, can\'t find words in database', {err});
@@ -50,7 +66,7 @@ module.exports = {
     async deleteWord(ctx) {
         try {
             ctx.body = await Word.remove({_id: ctx.request.body._id}, () => {
-                console.log('deleting is successfull');
+                console.log('deleting word is successfull');
             });
         }
         catch (err) {

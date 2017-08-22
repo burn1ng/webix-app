@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto'); // for executing crypting operations and creation of password hash
 const db = require('../config/db');
+const autoIncrement = require('mongoose-auto-increment');
+
+const connection = mongoose.createConnection(db.url);
+autoIncrement.initialize(connection);
 
 const userSchema = new mongoose.Schema({
+    _id: Number,
     displayName: String,
     email: {
         type: String,
@@ -39,10 +44,10 @@ userSchema.methods.checkPassword = function (password) {
     // no arrow function, because we use [this]
     if (!password) return false;
     if (!this.passwordHash) return false;
-    return crypto.pbkdf2Sync(password, this.salt, 1, 128, 'sha1') == this.passwordHash;
+    return crypto.pbkdf2Sync(password, this.salt, 1, 128, 'sha1').toString() === this.passwordHash;
 };
 
-const connection = mongoose.createConnection(db.url);
+userSchema.plugin(autoIncrement.plugin, 'User');
 const User = connection.model('User', userSchema);
 
 module.exports = User;
