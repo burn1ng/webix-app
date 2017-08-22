@@ -51,6 +51,7 @@ module.exports = {
     // DELETE
     async deleteWordGroup(ctx) {
         try {
+            console.log(ctx.request.body._id);
             ctx.body = await WordGroup.remove({_id: ctx.request.body._id}, () => {
                 console.log('deleting wordGroup is successfull');
             });
