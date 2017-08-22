@@ -43,7 +43,7 @@ define([
         template: "<span class='webix_icon fa-#icon#'></span> #value# ",
         data: [
             {value: _('dashboard'), id: 'dashboard', href: '#!/top/dashboard', icon: 'envelope-o'},
-            {value: _('test_results'), id: 'wordsTable', href: '#!/top/wordsTable', icon: 'briefcase'},
+            {value: _('all_vocabulary'), id: 'wordsTable', href: '#!/top/wordsTable', icon: 'briefcase'},
             {value: _('settings'), id: 'settings', href: '#!/top/settings/personal', icon: 'cog'}
         ]
     };

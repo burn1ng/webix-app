@@ -20,6 +20,7 @@ define([], () => (
         conjunction: 'Союз',
         interjection: 'Междометие',
         test_results: 'Результаты тестов',
+        all_vocabulary: 'Весь словарь',
         png_export: 'Экспортировать в PNG',
         pdf_export: 'Экспортировать в PDF',
         excel_export: 'Экспортировать в Excel',

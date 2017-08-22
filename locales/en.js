@@ -20,6 +20,7 @@ define([], () => (
         conjunction: 'Conjunction',
         interjection: 'Interjection',
         test_results: 'Test results',
+        all_vocabulary: 'All vocabulary',
         png_export: 'Export to PNG',
         pdf_export: 'Export to PDF',
         excel_export: 'Export to Excel',
