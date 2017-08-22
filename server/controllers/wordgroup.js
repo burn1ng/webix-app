@@ -3,25 +3,24 @@ const WordGroup = require('../models/wordgroup');
 module.exports = {
     // CREATE
     async createWordGroup(ctx) {
-        ctx.body = await WordGroup.create(
-            ctx.request.body,
-            (err, wordgroup) => {
-                if (err) {
-                    console.log(ctx.request.body);
-                    ctx.throw(500, 'Problem with adding wordgroup in database', {err});
-                }
-                console.log('wordgroup created!');
-                console.log(wordgroup);
-            }
-        );
+        try {
+            console.log(ctx);
+            ctx.body = await WordGroup.create({
+                wordGroupName: ctx.request.body.wordGroupName,
+                userId: ctx.request.user.id
+            });
+        }
+        catch (err) {
+            ctx.throw(500, 'Problem with adding word in database', {err});
+        }
     },
     // READ
     async getWordGroups(ctx) {
         try {
-            ctx.body = await WordGroup.find({});
+            ctx.body = await WordGroup.find({userId: ctx.request.user.id});
         }
         catch (err) {
-            ctx.throw(500, 'Sorry, can\'t find words in database', {err});
+            ctx.throw(500, 'Sorry, can\'t find wordGroups in database for that user', {err});
         }
     },
     // UPDATE
@@ -32,34 +31,32 @@ module.exports = {
                 ctx.request.body._id,
                 {$set:
                     {
-                        originalWord: ctx.request.body.originalWord,
-                        translationWord: ctx.request.body.translationWord,
-                        partOfSpeech: ctx.request.body.partOfSpeech
+                        wordGroupName: ctx.request.body.wordGroupName
                     },
                 $inc: {__v: 1}
                 },
                 {new: true},
                 (err, updatedWordGroup) => {
                     if (err) throw err;
-                    console.log('this is updatedWord! \n');
+                    console.log('this is updated wordGroupName! \n');
                     console.log(updatedWordGroup);
-                    console.log('\n word is updated!');
+                    console.log('\n wordGroupName is updated!');
                 }
             );
         }
         catch (err) {
-            ctx.throw(500, 'Problem with update word in database', {err});
+            ctx.throw(500, 'Problem with update wordGroup in database', {err});
         }
     },
     // DELETE
     async deleteWordGroup(ctx) {
         try {
             ctx.body = await WordGroup.remove({_id: ctx.request.body._id}, () => {
-                console.log('deleting is successfull');
+                console.log('deleting wordGroup is successfull');
             });
         }
         catch (err) {
-            ctx.throw(500, 'Problem with deleting word from database', {err});
+            ctx.throw(500, 'Problem with deleting wordGroup from database', {err});
         }
     }
 };
