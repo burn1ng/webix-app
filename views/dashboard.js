@@ -5,10 +5,9 @@ define([
 ], (wordsTable, _) => {
     function addItemToMaster(masterView, changingFieldName, inputId) {
         let item = {
-            // index: $$(masterView).count() + 1,
             count: 0, // there is ZERO words in wordgroup when we create it
-            createdAt: new Date().toLocaleString('en-US'),
-            updatedAt: new Date().toLocaleString('en-US')
+            createdAt: 'Loading...',
+            updatedAt: 'Loading...'
         };
 
         item[changingFieldName] = $$(inputId).getValue() || _('new_group');
@@ -58,20 +57,20 @@ define([
                     updateFromResponse: true
                 },
                 on: {
-                    // 'data->onStoreLoad': function () {
-                    //     this.data.each((wordgroup, i) => {
-                    //         wordgroup.count = wordgroup.count;
-                    //         wordgroup.createdAt = new Date(wordgroup.createdAt).toLocaleString('en-US');
-                    //         wordgroup.updatedAt = new Date(wordgroup.updatedAt).toLocaleString('en-US');
-                    //     });
-                    // },
-                    onItemRender() {
+                    'data->onStoreLoad': function () {
                         this.data.each((wordgroup, i) => {
                             wordgroup.index = i + 1;
                             wordgroup.createdAt = new Date(wordgroup.createdAt).toLocaleString('en-US');
                             wordgroup.updatedAt = new Date(wordgroup.updatedAt).toLocaleString('en-US');
                         });
                     }
+                    // onItemRender() {
+                    //     this.data.each((wordgroup, i) => {
+                    //         wordgroup.index = i + 1;
+                    //         wordgroup.createdAt = new Date(wordgroup.createdAt).toLocaleString('en-US');
+                    //         wordgroup.updatedAt = new Date(wordgroup.updatedAt).toLocaleString('en-US');
+                    //     });
+                    // }
                 },
                 type: {
                     template: '#index#. #wordGroupName#' +
