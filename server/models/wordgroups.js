@@ -7,25 +7,19 @@ autoIncrement.initialize(connection);
 
 const wordGroupSchema = new mongoose.Schema({
     _id: Number,
+    _creator: {
+        type: Number,
+        ref: 'User'
+    },
     wordGroupName: {
         type: String,
         required: true,
         maxlength: 100
-    },
-    userId: {
-        type: Number,
-        ref: 'User'
-    },
-    words: [{type: Number, ref: 'Word'}]
+    }
 }, {
     timestamps: true
     // autoIndex: false //for production purposes
 });
-
-// wordGroupSchema.methods.countWordsInGroup = (name) => {
-//     if (!res) return false;
-//     return res;
-// };
 
 wordGroupSchema.plugin(autoIncrement.plugin, 'WordGroup');
 const WordGroup = connection.model('WordGroup', wordGroupSchema);

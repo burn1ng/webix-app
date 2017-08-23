@@ -4,15 +4,14 @@ module.exports = {
     // CREATE
     async createWord(ctx) {
         try {
-            ctx.body = await Word.create({
-                originalWord: ctx.request.body.originalWord,
-                userId: ctx.request.user.id
+            let currentUser = ctx.request.user;
+
+            let newWord = await Word.create({
+                _creator: currentUser,
+                originalWord: ctx.request.body.originalWord
             });
-            // push refs to children
-            // User.findById(ctx.request.user.id).exec((err, currentUser) => {
-            //     currentUser.words.push(word);
-            //     currentUser.save();
-            // });
+
+            ctx.body = newWord;
         }
         catch (err) {
             ctx.throw(500, 'Problem with adding word in database', {err});
@@ -21,7 +20,7 @@ module.exports = {
     // READ
     async getWords(ctx) {
         try {
-            ctx.body = await Word.find({userId: ctx.request.user.id});
+            ctx.body = await Word.find({_creator: ctx.request.user.id});
             // if we use populate method, and words array in user
             // User
             //     .findById(ctx.request.user.id)

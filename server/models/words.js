@@ -6,11 +6,12 @@ const connection = mongoose.createConnection(db.url);
 autoIncrement.initialize(connection);
 
 const wordSchema = new mongoose.Schema({
-    userId: {
+    _id: Number,
+    _creator: {
         type: Number,
         ref: 'User'
     },
-    wordGroupId: {
+    _wordGroup: {
         type: Number,
         ref: 'WordGroup'
     },

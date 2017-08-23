@@ -5,13 +5,13 @@ define([
 ], (wordsTable, _) => {
     function addItemToMaster(masterView, changingFieldName, inputId) {
         let item = {
-            rank: $$(masterView).count() + 1,
+            // index: $$(masterView).count() + 1,
             count: 0, // there is ZERO words in wordgroup when we create it
             createdAt: new Date().toLocaleString('en-US'),
             updatedAt: new Date().toLocaleString('en-US')
         };
 
-        item[changingFieldName] = $$(inputId).getValue() || _('wordgroup_name_placeholder');
+        item[changingFieldName] = $$(inputId).getValue() || _('new_group');
         $$(masterView).add(item);
     }
 
@@ -32,8 +32,10 @@ define([
         for (let i = 0; i < selectedItems.length; i++) {
             let item = $$(masterView).getItem(selectedItems[i]);
 
-            item[changingFieldName] = $$(inputId).getValue() || _('wordgroup_name_placeholder');
+            item[changingFieldName] = $$(inputId).getValue() || _('new_group');
+
             item.updatedAt = new Date().toLocaleString('en-US');
+
             $$(masterView).updateItem(selectedItems[i], item);
         }
     }
@@ -50,30 +52,29 @@ define([
                 view: 'dataview',
                 select: 'multiselect',
                 width: 250,
-                url: 'api/getWordGroups',
+                url: 'api/wordgroups',
                 save: {
                     url: 'rest->/api/wordgroup',
                     updateFromResponse: true
                 },
-                ready() {
-
-                },
                 on: {
-                    'data->onStoreLoad': function () {
-                        this.data.each((obj, i) => {
-                            obj.count = obj.words.length;
-                        });
-                    },
+                    // 'data->onStoreLoad': function () {
+                    //     this.data.each((wordgroup, i) => {
+                    //         wordgroup.count = wordgroup.count;
+                    //         wordgroup.createdAt = new Date(wordgroup.createdAt).toLocaleString('en-US');
+                    //         wordgroup.updatedAt = new Date(wordgroup.updatedAt).toLocaleString('en-US');
+                    //     });
+                    // },
                     onItemRender() {
-                        this.data.each((obj, i) => {
-                            obj.rank = i + 1;
-                            obj.createdAt = new Date(obj.createdAt).toLocaleString('en-US');
-                            obj.updatedAt = new Date(obj.updatedAt).toLocaleString('en-US');
+                        this.data.each((wordgroup, i) => {
+                            wordgroup.index = i + 1;
+                            wordgroup.createdAt = new Date(wordgroup.createdAt).toLocaleString('en-US');
+                            wordgroup.updatedAt = new Date(wordgroup.updatedAt).toLocaleString('en-US');
                         });
                     }
                 },
                 type: {
-                    template: '#rank#. #wordGroupName#' +
+                    template: '#index#. #wordGroupName#' +
                     '<div class="wordgroup-timestamp"> Created: #createdAt# </div>' +
                     '<div class="wordgroup-timestamp"> Updated: #updatedAt# </div>' +
                     'Words: #count#',
@@ -113,6 +114,8 @@ define([
                         type: 'danger',
                         click() {
                             removeItemFromMaster('wordGroupList:dataview');
+                            $$('formInputValue').setValue('');
+                            $$('gridDatatable').clearAll();
                         }
                     }
                 ]
@@ -124,6 +127,7 @@ define([
                         label: _('update'),
                         click() {
                             updateItemInMaster('wordGroupList:dataview', 'wordGroupName', 'formInputValue');
+                            $$('formInputValue').setValue('');
                         }
                     },
                     {
@@ -169,6 +173,8 @@ define([
 
             $$('wordGroupList:dataview').attachEvent('onAfterSelect', function (id) {
                 // we use this, t.w. arrow function can't be here
+                let selectedItem = this.getItem(id);
+                console.log(selectedItem._id);
                 let selectedValue = this.getItem(id).wordGroupName;
                 $$('formInputValue').setValue(selectedValue);
             });

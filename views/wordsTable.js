@@ -148,7 +148,7 @@ define([
 
     let grid = {
         id: 'gridDatatable',
-        url: 'api/getWords',
+        url: 'api/words',
         save: {
             url: 'restWithDataProcessorDelay->/api/word',
             updateFromResponse: true
@@ -170,8 +170,8 @@ define([
         },
         on: {
             'data->onStoreUpdated': function () {
-                this.data.each((obj, i) => {
-                    obj.index = i + 1;
+                this.data.each((word, i) => {
+                    word.index = i + 1;
                 });
             },
             onBeforeLoad() {
@@ -320,23 +320,10 @@ define([
     };
 
     return {
-        $ui: ui
-        // $oninit: (view, $scope) => {
-        // $$('gridDatatable').data.sync(words.arrayOfWords);
-        // $$('gridDatatable').parse(data);
-
-        // words.arrayOfWords.attachEvent('onBeforeLoad', () => {
-        //     $$('gridDatatable').showOverlay('Loading...');
-        // });
-        // words.arrayOfWords.attachEvent('onAfterLoad', () => {
-        //     showDataStatus($$('gridDatatable'));
-        // });
-        // words.arrayOfWords.attachEvent('onAfterDelete', () => {
-        //     showDataStatus($$('gridDatatable'));
-        // });
-        // words.arrayOfWords.attachEvent('onAfterAdd', () => {
-        //     showDataStatus($$('gridDatatable'));
-        // });
-        // }
+        $ui: ui,
+        $oninit: (view, $scope) => {
+            // $$('gridDatatable').data.importData(words.arrayOfWords);
+            // $$('gridDatatable').parse(words.arrayOfWords);
+        }
     };
 });
