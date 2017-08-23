@@ -44,7 +44,7 @@ define([], () => {
     };
 
     let collection = new webix.DataCollection({
-        url: 'api/getWords', // simple load data
+        url: 'api/getWords',
         save: {
             url: 'restWithDataProcessorDelay->/api/word', // custom proxy
             updateFromResponse: true
