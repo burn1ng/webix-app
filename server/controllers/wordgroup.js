@@ -48,6 +48,15 @@ module.exports = {
             ctx.throw(500, 'Sorry, can\'t find wordGroups in database for that user', {err});
         }
     },
+    // READ
+    async getWordsByWordGroupId(ctx) {
+        try {
+            ctx.body = await Word.find({_wordGroup: ctx.request.query.id});
+        }
+        catch (err) {
+            ctx.throw(500, 'Sorry, can\'t find words in database for that id', {err});
+        }
+    },
     // UPDATE
     async updateWordGroup(ctx) {
         try {
@@ -74,7 +83,11 @@ module.exports = {
     // DELETE
     async deleteWordGroup(ctx) {
         try {
+            console.log(ctx.request.body);
+
             await WordGroup.remove({_id: ctx.request.body._id});
+            await Word.remove({_wordGroup: ctx.request.body._id});
+            // console.log(await Word.remove({_wordGroup: ctx.request.body._id}));
             ctx.status = 200;
             ctx.body = {message: 'Record was deleted successfully'};
         }

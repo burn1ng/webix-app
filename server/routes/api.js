@@ -12,8 +12,9 @@ module.exports = (router) => {
 
     // TODO: prefix for /api/
 
-    router.get('/api/wordgroups', checkAuthMiddleware, controllers.wordgroup.getWordGroups); // read
+    router.get('/api/wordgroup/', checkAuthMiddleware, controllers.wordgroup.getWordsByWordGroupId); // read
     router.post('/api/wordgroup', checkAuthMiddleware, controllers.wordgroup.createWordGroup); // create
+    router.get('/api/wordgroups', checkAuthMiddleware, controllers.wordgroup.getWordGroups); // read
     router.put('/api/wordgroup/:id', checkAuthMiddleware, controllers.wordgroup.updateWordGroup); // update
     router.del('/api/wordgroup/:id', checkAuthMiddleware, controllers.wordgroup.deleteWordGroup); // delete
 };

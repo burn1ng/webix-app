@@ -17,7 +17,6 @@ const wordSchema = new mongoose.Schema({
     },
     originalWord: {
         type: String,
-        required: true,
         maxlength: 45
     },
     translationWord: {

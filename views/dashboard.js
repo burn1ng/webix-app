@@ -1,8 +1,9 @@
 define([
-    'views/wordsTable',
-    // 'models/wordgroups',
-    'locale'
-], (wordsTable, _) => {
+    'locale',
+    'views/grid/gridTopToolbar',
+    'views/grid/grid',
+    'views/grid/gridBottomToolbar'
+], (_, gridTopToolbar, grid, gridBottomToolbar) => {
     function addItemToMaster(masterView, changingFieldName, inputId) {
         let item = {
             count: 0,
@@ -45,19 +46,42 @@ define([
             {
                 id: 'wordGroupList:dataview',
                 view: 'dataview',
-                select: 'multiselect',
+                select: true,
                 width: 250,
                 url: 'api/wordgroups',
                 save: {
                     url: 'rest->/api/wordgroup',
                     updateFromResponse: true
                 },
+                // ready() {
+                //     this.select(this.getFirstId());
+                // },
                 on: {
                     onItemRender() {
                         this.data.each((wordgroup, i) => {
                             wordgroup.index = i + 1;
                             wordgroup.createdAt = new Date(wordgroup.createdAt).toLocaleString('en-US');
                             wordgroup.updatedAt = new Date(wordgroup.updatedAt).toLocaleString('en-US');
+                        });
+                    },
+                    onItemClick() {
+                        // prevent datatable editing error
+                        return !$$('gridDatatable').getEditState();
+                    },
+                    onAfterSelect(id) {
+                        // push name of group to form input
+                        let selectedItem = this.getItem(id);
+                        let selectedValue = this.getItem(id).wordGroupName;
+                        $$('formInputValue').setValue(selectedValue);
+                        $$('gridDatatable').clearAll();
+
+                        // load data to datatable by item id
+                        let query = `id=${selectedItem._id}`;
+                        let promise = webix.ajax().get('api/wordgroup/', query);
+
+                        promise.then((words) => {
+                            let data = words.json();
+                            $$('gridDatatable').parse(data);
                         });
                     }
                 },
@@ -115,7 +139,6 @@ define([
                         label: _('update'),
                         click() {
                             updateItemInMaster('wordGroupList:dataview', 'wordGroupName', 'formInputValue');
-                            $$('formInputValue').setValue('');
                         }
                     },
                     {
@@ -145,7 +168,13 @@ define([
                         ]
                     },
                     {view: 'resizer'},
-                    wordsTable
+                    {
+                        rows: [
+                            gridTopToolbar,
+                            grid,
+                            gridBottomToolbar
+                        ]
+                    }
                 ]
             }
         ]
@@ -155,18 +184,6 @@ define([
         $ui: ui,
         $menu: 'wordGroupList:dataview',
         $oninit: (view, $scope) => {
-            // $$('wordGroupList:dataview').parse(wordgroups.data);
-
-            console.log($$('wordGroupList:dataview').data);
-
-            $$('wordGroupList:dataview').attachEvent('onAfterSelect', function (id) {
-                // we use this, t.w. arrow function can't be here
-                let selectedItem = this.getItem(id);
-                console.log(selectedItem._id);
-                let selectedValue = this.getItem(id).wordGroupName;
-                $$('formInputValue').setValue(selectedValue);
-            });
-
             let dp = new webix.DataProcessor({
                 master: $$('wordGroupList:dataview')
             });

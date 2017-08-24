@@ -8,7 +8,8 @@ module.exports = {
 
             let newWord = await Word.create({
                 _creator: currentUser,
-                originalWord: ctx.request.body.originalWord
+                originalWord: ctx.request.body.originalWord,
+                _wordGroup: ctx.request.body._wordGroup
             });
 
             ctx.body = newWord;
@@ -21,30 +22,23 @@ module.exports = {
     async getWords(ctx) {
         try {
             ctx.body = await Word.find({_creator: ctx.request.user.id});
-            // if we use populate method, and words array in user
-            // User
-            //     .findById(ctx.request.user.id)
-            //     .populate('words') // only works if we pushed refs to children
-            //     .exec((err, person) => {
-            //         if (err) console.log(err);
-            //         console.log(person);
-            //     });
         }
         catch (err) {
-            ctx.throw(500, 'Sorry, can\'t find words in database', {err});
+            ctx.throw(500, 'Sorry, can\'t find words in database for that user', {err});
         }
     },
     // UPDATE
     async updateWord(ctx) {
         try {
             console.log(ctx);
+            let req = ctx.request.body;
             ctx.body = await Word.findByIdAndUpdate(
-                ctx.request.body._id,
+                req._id,
                 {$set:
                     {
-                        originalWord: ctx.request.body.originalWord,
-                        translationWord: ctx.request.body.translationWord,
-                        partOfSpeech: ctx.request.body.partOfSpeech
+                        originalWord: req.originalWord || '',
+                        translationWord: req.translationWord || '',
+                        partOfSpeech: req.partOfSpeech || 0
                     },
                 $inc: {__v: 1}
                 },
