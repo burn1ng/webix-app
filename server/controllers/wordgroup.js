@@ -14,12 +14,11 @@ module.exports = {
                     wordGroupName: req.wordGroupName
                 }
             );
-
             ctx.body = {
+                _id: resFromDb._id,
                 wordGroupName: resFromDb.wordGroupName,
                 createdAt: resFromDb.createdAt,
-                updatedAt: resFromDb.updatedAt,
-                count: 0
+                updatedAt: resFromDb.updatedAt
             };
         }
         catch (err) {
@@ -52,8 +51,7 @@ module.exports = {
     // UPDATE
     async updateWordGroup(ctx) {
         try {
-            console.log(ctx);
-            ctx.body = await WordGroup.findByIdAndUpdate(
+            let updatedWordGroup = await WordGroup.findByIdAndUpdate(
                 ctx.request.body._id,
                 {$set:
                     {
@@ -61,14 +59,13 @@ module.exports = {
                     },
                 $inc: {__v: 1}
                 },
-                {new: true},
-                (err, updatedWordGroup) => {
-                    if (err) throw err;
-                    console.log('this is updated wordGroupName in database! \n');
-                    console.log(updatedWordGroup);
-                    console.log('\n wordGroupName is updated!');
-                }
+                {new: true}
             );
+            ctx.body = {
+                wordGroupName: updatedWordGroup.wordGroupName,
+                createdAt: updatedWordGroup.createdAt,
+                updatedAt: updatedWordGroup.updatedAt
+            };
         }
         catch (err) {
             ctx.throw(500, 'Problem with update wordGroup in database', {err});
