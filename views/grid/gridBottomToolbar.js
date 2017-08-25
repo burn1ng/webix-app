@@ -1,6 +1,7 @@
 define([
+    'protected',
     'locale'
-], (_) => {
+], (app, _) => {
     let gridBottomToolbar = {
         id: 'gridBottomToolbar',
         view: 'toolbar',
@@ -8,6 +9,7 @@ define([
         elements: [
             {
                 view: 'button',
+                id: 'gridBottomToolbar:testResults',
                 type: 'iconButton',
                 icon: 'trophy',
                 label: _('test_results'),
@@ -59,18 +61,45 @@ define([
             {},
             {
                 view: 'button',
+                id: 'gridBottomToolbar:testGenerate',
                 type: 'iconButton',
                 icon: 'cog',
                 label: _('test_generate'),
-                autowidth: true,
-                click() {
-                    // TODO
-                }
+                autowidth: true
+                // click() {
+                //     // app.show('test');
+                // }
             }
         ]
     };
 
     return {
-        $ui: gridBottomToolbar
+        $ui: gridBottomToolbar,
+        $oninit: (view, $scope) => {
+            $$('gridBottomToolbar:testGenerate').attachEvent('onItemClick', () => {
+                let selectedWordGroup = $$('wordGroupList:dataview').getSelectedItem();
+                if (selectedWordGroup) {
+                    let currentCount = selectedWordGroup.count;
+                    if (!currentCount) {
+                        webix.message({type: 'warning', text: 'Please, add words in your wordgroup before test generating!'});
+                    }
+
+                    let promise = webix.ajax().post('/api/generateTest', {
+                        wordGroupId: selectedWordGroup._id,
+                        count: currentCount
+                    });
+
+                    promise.then((randomWords) => {
+                        console.log(randomWords.json());
+                    });
+                    promise.fail((err) => {
+                        webix.message({type: 'warning', text: `Sorry, problems with test generating: ${err}`});
+                    });
+                }
+                else {
+                    webix.message({type: 'warning', text: 'Please, at first select any wordgroup for testing!'});
+                }
+            });
+        }
     };
 });

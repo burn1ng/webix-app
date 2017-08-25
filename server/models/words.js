@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const db = require('../config/db');
+const random = require('mongoose-simple-random');
 const autoIncrement = require('mongoose-auto-increment');
 
 const connection = mongoose.createConnection(db.url);
@@ -31,6 +32,7 @@ const wordSchema = new mongoose.Schema({
     // autoIndex: false //for production purposes
 });
 
+wordSchema.plugin(random);
 wordSchema.plugin(autoIncrement.plugin, 'Word');
 const Word = connection.model('Word', wordSchema);
 
