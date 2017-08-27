@@ -1,7 +1,8 @@
 define([
     'protected',
-    'locale'
-], (app, _) => {
+    'locale',
+    'models/dataForTest'
+], (app, _, dataForTest) => {
     let gridBottomToolbar = {
         id: 'gridBottomToolbar',
         view: 'toolbar',
@@ -66,9 +67,6 @@ define([
                 icon: 'cog',
                 label: _('test_generate'),
                 autowidth: true
-                // click() {
-                //     // app.show('test');
-                // }
             }
         ]
     };
@@ -76,13 +74,19 @@ define([
     return {
         $ui: gridBottomToolbar,
         $oninit: (view, $scope) => {
+            webix.extend($$('gridDatatable'), webix.ProgressBar);
+
             $$('gridBottomToolbar:testGenerate').attachEvent('onItemClick', () => {
                 let selectedWordGroup = $$('wordGroupList:dataview').getSelectedItem();
                 if (selectedWordGroup) {
                     let currentCount = selectedWordGroup.count;
+
                     if (!currentCount) {
                         webix.message({type: 'warning', text: 'Please, add words in your wordgroup before test generating!'});
                     }
+
+                    $$('gridDatatable').showProgress({type: 'icon', delay: 3000});
+                    webix.message({text: `Test for ${selectedWordGroup.wordGroupName} is genearting now...`});
 
                     let promise = webix.ajax().post('/api/generateTest', {
                         wordGroupId: selectedWordGroup._id,
@@ -91,8 +95,9 @@ define([
 
                     promise.then((randomWords) => {
                         console.log(randomWords.json());
-                    });
-                    promise.fail((err) => {
+                        dataForTest.randomData = randomWords.json();
+                        app.show('test');
+                    }).fail((err) => {
                         webix.message({type: 'warning', text: `Sorry, problems with test generating: ${err}`});
                     });
                 }

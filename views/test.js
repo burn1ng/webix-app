@@ -1,6 +1,8 @@
 define([
+    'protected',
+    'models/dataForTest',
     'locale'
-], (_) => {
+], (app, dataForTest, _) => {
     let page = {
         rows: [
             {},
@@ -66,22 +68,14 @@ define([
         ]
     };
 
-    // let ui = {
-    //     view: 'layout',
-    //     id: 'wordsTable',
-    //     rows: [
-    //         grid
-    //         // etc
-    //     ]
-    // };
-
     return {
-        $ui: page
-        // $oninit: (view, $scope) => {
-        //     let promise = webix.ajax().post('some.php');
-        //     promise.then((realdata) => {
+        $ui: page,
+        $oninit: (view, $scope) => {
+            if (!dataForTest.randomData.length) {
+                app.show('top/dashboard');
+            }
+            console.log(dataForTest.randomData);
+        }
 
-        //     });
-        // }
     };
 });
