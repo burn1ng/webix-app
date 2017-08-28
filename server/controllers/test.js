@@ -27,18 +27,21 @@ module.exports = {
             ctx.throw(500, 'Problem with creating test record in db', {err});
         }
         // get Random data for test
-        const filter = {_wordGroup: wordGroupId};
-        const fields = {originalWord: 1, translationWord: 1, partOfSpeech: 1};
-        let options = {limit: countOfWords > 10 ? 10 : countOfWords};
-
-        let promiseDecorator = new Promise((resolve, reject) => {
+        let findRandomWords = new Promise((resolve, reject) => {
+            let filter = {_wordGroup: wordGroupId};
+            let fields = {originalWord: 1, translationWord: 1, partOfSpeech: 1};
+            let options = {limit: countOfWords > 10 ? 10 : countOfWords};
             Word.findRandom(filter, fields, options, (err, randomWords) => {
                 if (err) { reject(err); }
                 else { resolve(randomWords); }
             });
         });
 
-        await promiseDecorator.then((randomWords) => {
+        let findRandomVariants = new Promise((resolve, reject) => {
+
+        });
+
+        await findRandomWords.then((randomWords) => {
             ctx.body = randomWords;
         }).catch((err) => {
             // TODO: remove current TEST from db
