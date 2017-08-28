@@ -113,7 +113,6 @@ define([
 
                             promise.then((randomData) => {
                                 console.log({typeOfTest: id === 'en_rus_test' ? 0 : 1});
-                                console.log(randomData.json());
                                 dataForTest.data = randomData.json();
                                 app.show('test');
                             }).fail((err) => {
