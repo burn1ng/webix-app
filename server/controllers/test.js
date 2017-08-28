@@ -37,13 +37,27 @@ module.exports = {
             });
         });
 
-        let findRandomVariants = new Promise((resolve, reject) => {
-
-        });
+        // let findRandomVariants = new Promise((resolve, reject) => {
+        //     let filter = {_wordGroup: wordGroupId};
+        // });
 
         await findRandomWords.then((randomWords) => {
-            ctx.body = randomWords;
-        }).catch((err) => {
+            for (let i = 0; i < randomWords.length; i++) {
+                let findRandomVariants = new Promise((resolve, reject) => {
+                    let filter = {partOfSpeech: randomWords[i].partOfSpeech};
+                    let fields = {originalWord: 1, translationWord: 1, partOfSpeech: 1};
+                    let options = {limit: 3};
+                    Word.findRandom(filter, fields, options, (err, randomVariants) => {
+                        if (err) { reject(err); }
+                        else { resolve(randomVariants); }
+                    });
+                });
+            }
+
+            // ctx.body = randomWords;
+        });
+
+        findRandomWords.catch((err) => {
             // TODO: remove current TEST from db
             ctx.throw(500, 'Problem with generating random data', {err});
         });
