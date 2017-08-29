@@ -19,4 +19,5 @@ module.exports = (router) => {
     router.del('/api/wordgroup/:id', checkAuthMiddleware, controllers.wordgroup.deleteWordGroup); // delete
 
     router.post('/api/generateTest', checkAuthMiddleware, controllers.test.generateTest);
+    router.put('/api/updateTest', checkAuthMiddleware, controllers.test.updateTest);
 };

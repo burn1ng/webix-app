@@ -111,9 +111,11 @@ define([
                                 typeOfTest: id === 'en_rus_test' ? 0 : 1 // 0 - eng to rus test, 1 - rus to eng test
                             });
 
-                            promise.then((randomData) => {
-                                console.log({typeOfTest: id === 'en_rus_test' ? 0 : 1});
-                                dataForTest.data = randomData.json();
+                            promise.then((response) => {
+                                // console.log(response.json());
+                                response = response.json();
+                                dataForTest.steps = response.steps;
+                                dataForTest._id = response._id;
                                 app.show('test');
                             }).fail((err) => {
                                 webix.message({type: 'warning', text: `Sorry, problems with test generating: ${err}`});

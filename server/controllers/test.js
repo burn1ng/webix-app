@@ -13,6 +13,10 @@ module.exports = {
             ctx.body = {message: 'Bad request for generating test for you, dude!'};
             return;
         }
+        let jsonResponse = {
+            steps: [],
+            _id: 0
+        };
         // create new Test
         try {
             let newTest = await Test.create(
@@ -21,7 +25,7 @@ module.exports = {
                     score: 0
                 }
             );
-            console.log(newTest);
+            jsonResponse._id = newTest._id;
         }
         catch (err) {
             ctx.throw(500, 'Problem with creating test record in db', {err});
@@ -35,8 +39,6 @@ module.exports = {
             }
         }
         try {
-            let jsonResponse = [];
-
             let typeOfTest = +ctx.request.body.typeOfTest; // convert to number
 
             let findRandomQuestions = await new Promise((resolve, reject) => {
@@ -55,7 +57,7 @@ module.exports = {
                 let ans = typeOfTest === 0 ?
                     randomQuestion.translationWord : randomQuestion.originalWord;
 
-                jsonResponse[i] = {
+                let currentStep = {
                     question: quest,
                     questionPartOfSpeech: randomQuestion.partOfSpeech,
                     correctAnswer: ans
@@ -87,13 +89,52 @@ module.exports = {
 
                 shuffle(middleArr);
 
-                jsonResponse[i].variants = middleArr;
+                currentStep.variants = middleArr;
+
+                jsonResponse.steps[i] = currentStep;
             }));
-            console.log(typeof JSON.stringify(jsonResponse));
-            ctx.body = JSON.stringify(jsonResponse);
+
+            ctx.body = jsonResponse;
         }
         catch (err) {
             ctx.throw(500, 'Problem with generating random data', {err});
+        }
+    },
+    async updateTest(ctx) {
+        console.log(ctx.request.body);
+        ctx.status = 200;
+        try {
+            console.log(ctx);
+            let req = ctx.request.body;
+            ctx.body = await Test.findByIdAndUpdate(
+                req._id,
+                {$set:
+                    {
+                        score: req.score || 0
+                    },
+                $inc: {__v: 1}
+                },
+                {new: true},
+                (err, updatedTest) => {
+                    if (err) throw err;
+                    console.log('this is updatedTest! \n');
+                    console.log(updatedTest);
+                    console.log('\n Test is updated!');
+                }
+            );
+        }
+        catch (err) {
+            ctx.throw(500, 'Problem with update word in database', {err});
+        }
+    },
+    async deleteTest(ctx) {
+        try {
+            ctx.body = await Test.remove({_id: ctx.request.body._id}, () => {
+                console.log('deleting test is successfull');
+            });
+        }
+        catch (err) {
+            ctx.throw(500, 'Problem with deleting test from database', {err});
         }
     }
 };

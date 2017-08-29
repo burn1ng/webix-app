@@ -3,41 +3,54 @@ define([
     'models/dataForTest',
     'locale'
 ], (app, dataForTest, _) => {
-    let mydata = [
-        {question: 'bird', questionPartOfSpeech: 2, correctAnswer: 'птица', variants: ['расследование', 'птица', 'слон', 'курица']},
-        {question: 'slowly ', questionPartOfSpeech: 4, correctAnswer: 'медленно', variants: ['скоро', 'легко', 'медленно', 'еженедельно']},
-        {question: 'fly', questionPartOfSpeech: 1, correctAnswer: 'лететь', variants: ['лаять', 'бежать', 'лететь', 'плыть']},
-        {question: 'hardly', questionPartOfSpeech: 4, correctAnswer: 'тяжело', variants: ['полностью', 'тяжело', 'медленно', 'теперь, сейчас']},
-        {question: 'or', questionPartOfSpeech: 7, correctAnswer: 'или', variants: ['или', 'и']},
-        {question: 'elephant', questionPartOfSpeech: 2, correctAnswer: 'слон', variants: ['расследование', 'курица', 'тигр', 'слон']},
-        {question: 'easily', questionPartOfSpeech: 4, correctAnswer: 'легко', variants: ['скоро', 'медленно', 'легко', 'теперь, сейчас']},
-        {question: 'weekly', questionPartOfSpeech: 4, correctAnswer: 'еженедельно', variants: ['еженедельно', 'теперь, сейчас', 'скоро', 'медленно']},
-        {question: 'bark', questionPartOfSpeech: 1, correctAnswer: 'лаять', variants: ['бежать', 'лететь', 'сражаться', 'лаять']},
-        {question: 'tiger', questionPartOfSpeech: 2, correctAnswer: 'тигр', variants: ['собака', 'курица', 'тигр', 'птица']}
-    ];
-
     let score = 0;
     let currentDataItem = 0;
 
     function loadVariants(index, toolbarId) {
         let buttons = $$(toolbarId).elements;
-        for (let i = 0; i < Object.keys(buttons).length; i++) {
-            buttons[i].setValue(`${mydata[index].variants[i] || ''}`);
+        for (let i = 0; i < 4; i++) {
+            buttons[i].setValue(`${dataForTest.steps[index].variants[i] || ''}`);
             buttons[i].refresh();
         }
     }
     function loadQuestion(index, templateId) {
         let template = $$(templateId);
         template.refresh();
-        template.config.data.question = `${index + 1}. ${mydata[index].question}`;
+        console.log(dataForTest.steps);
+        template.config.data.question = `${index + 1}. ${dataForTest.steps[index].question}`;
         template.refresh();
         // template.render();
     }
 
+    function nextQuestion(toolbarId, templateId) {
+        loadVariants(currentDataItem, toolbarId);
+        loadQuestion(currentDataItem, templateId);
+    }
+
     function onButtonClickHandler(id, toolbarId, templateId) {
+        if (currentDataItem >= dataForTest.steps.length - 1) {
+            $$(toolbarId).disable();
+
+            webix.message(`Nice! Your score is ${score}! Saving your results...`);
+
+            let promise = webix.ajax().put('/api/updateTest', {
+                score,
+                _id: dataForTest._id
+            });
+
+            promise.then((res) => {
+                console.log(res.json());
+                // app.show('test');
+            }).fail((err) => {
+                webix.message({type: 'warning', text: `Sorry, problems with test generating: ${err}`});
+            });
+
+            return;
+        }
+
         let clickedButton = $$(id);
-        if (clickedButton.data.value === mydata[currentDataItem].correctAnswer) {
-            if (mydata[currentDataItem].questionPartOfSpeech === 1 || 2) {
+        if (clickedButton.data.value === dataForTest.steps[currentDataItem].correctAnswer) {
+            if (dataForTest.steps[currentDataItem].questionPartOfSpeech === 1 || 2) {
                 score += 2;
                 webix.message('Brilliant! +2 points for correct answer!');
             }
@@ -51,9 +64,12 @@ define([
         }
 
         currentDataItem++;
-        loadVariants(currentDataItem, toolbarId);
-        loadQuestion(currentDataItem, templateId);
+        console.log(currentDataItem);
+        if (currentDataItem < dataForTest.steps.length) {
+            nextQuestion(toolbarId, templateId);
+        }
     }
+
 
     let page = {
         rows: [
@@ -78,7 +94,7 @@ define([
                             },
                             {
                                 id: 'test:question',
-                                data: mydata[currentDataItem],
+                                data: dataForTest.steps[currentDataItem],
                                 template: '<div class="question"><span>#question#</span> ?</div>',
                                 autoheight: true
                             },
@@ -130,22 +146,17 @@ define([
     return {
         $ui: page,
         $oninit: (view, $scope) => {
-            // if (!dataForTest.data.length) {
-            //     app.show('top/dashboard');
-            // }
-
-            console.log(dataForTest.data.length);
-
-            // dataForTest.data.length
-            while (currentDataItem < mydata.length) {
-                loadVariants(currentDataItem, 'test:toolbar');
-                loadQuestion(currentDataItem, 'test:question');
+            if (!dataForTest.steps.length) {
+                app.show('top/dashboard');
             }
-            alert('finish!');
+
+            loadVariants(currentDataItem, 'test:toolbar');
+            loadQuestion(currentDataItem, 'test:question');
         },
         $ondestroy() {
-            dataForTest.data = [];
-            console.dir(`ondestroy: ${dataForTest.data}`);
+            dataForTest.steps = [];
+            dataForTest._id = 0;
+            console.dir(`ondestroy: ${dataForTest.steps}`);
         }
 
     };
