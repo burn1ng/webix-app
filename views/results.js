@@ -42,6 +42,9 @@ define([
                 confirmDelete(this, _('test_result_confirm_delete'), deleteRow);
             }
         },
+        ready() {
+            this.select(this.getLastId());
+        },
         on: {
             'data->onStoreUpdated': function () {
                 this.data.each((testResult, i) => {
@@ -70,28 +73,20 @@ define([
                 id: 'createdAt',
                 fillspace: 2,
                 header: [_('result_created'), {content: 'dateFilter', placeholder: _('find_by_date_placeholder')}],
-                format: webix.i18n.fullDateFormatStr
+                format: webix.i18n.fullDateFormatStr,
+                sort: 'date'
             },
-            // {
-            //     id: 'wordGroupName',
-            //     fillspace: 3,
-            //     header: [_('wordgroup_name_label'), {content: 'selectFilter'}],
-            //     sort: 'string'
-            // },
             {
                 id: 'score',
                 fillspace: 1,
                 header: [_('score'), {content: 'textFilter', placeholder: _('find_score_placeholder')}],
-                sort: 'string'
+                sort: 'int'
             },
             {id: 'trash', header: '&nbsp;', width: 35, template: "<span  style='color:#777777; cursor:pointer;' class='webix_icon fa-trash-o'></span>"}
         ]
     };
 
     return {
-        $ui: resultsGrid,
-        $oninit(view, $scope) {
-            webix.i18n.setLocale('ru-RU');
-        }
+        $ui: resultsGrid
     };
 });
