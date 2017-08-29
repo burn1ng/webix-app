@@ -44,7 +44,7 @@ define([
         data: [
             {value: _('dashboard'), id: 'dashboard', href: '#!/top/dashboard', icon: 'envelope-o'},
             {value: _('all_vocabulary'), id: 'wordsTable', href: '#!/top/wordsTable', icon: 'briefcase'},
-            {value: _('test_results'), id: 'resultsdDatatable', href: '#!/top/results', icon: 'graduation-cap'},
+            {value: _('test_results'), id: 'results', href: '#!/top/results', icon: 'graduation-cap'},
             {value: _('settings'), id: 'settings', href: '#!/top/settings/personal', icon: 'cog'}
         ]
     };
