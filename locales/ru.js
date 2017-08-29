@@ -45,7 +45,7 @@ define([], () => (
         empty_data: 'Нет данных',
         my_profile: 'Мой профиль',
         logout: 'Выйти',
-        word_confirm_delete: 'Слово будет удалено.<br/> Вы уверены?',
+        selected_word_confirm_delete: 'Слово будет удалено.<br/> Вы уверены?',
         selected_words_confirm_delete: 'Выделенные слова будут удалены.<br/> Вы уверены?',
         all_words_confirm_delete: '<strong><span style="color:red;">Все слова в данной группе слов</span></strong><br/> будут удалены.<br/> Вы уверены?',
         yes: 'Да',
@@ -71,6 +71,11 @@ define([], () => (
         now_generate: 'генерируется...',
         test_generate_fail: 'Простите, ошибка с генерацией теста:',
         select_wordgroup_for_test: 'Пожалуйста, сначала выберите любую группу для тестирования!',
-        test_header_title: 'Пожалуйста, выберите правильный ответ'
+        test_header_title: 'Пожалуйста, выберите правильный ответ',
+        select_wg_before_add: 'Пожалуйста, выберите группу, если хотите добавить слово',
+        add_words_only_for_group: 'Пожалуйста, добавляйте слова только в конкретную группу',
+        no_words_in_wg_to_delete: 'Нет слов для удаления в данной группе',
+        select_wg_to_clean: 'Пожалуйста, сначала выберите группу, которую хотите очистить',
+        select_words_to_delete: 'Пожалуйста, сначала выберите слова, которые хотите удалить'
     }
 ));

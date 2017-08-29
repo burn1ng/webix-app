@@ -31,7 +31,7 @@ define([
             updateDataViewItem(selectedWordGroup, 'add');
         }
         else {
-            webix.message({type: 'warning', text: 'Please, select wordgroup if you want to add new word'});
+            webix.message({type: 'warning', text: `${_('select_wg_before_add')}`});
         }
     }
     function deleteRow(grid) {
@@ -85,7 +85,7 @@ define([
                         addRow($$('gridDatatable'));
                     }
                     else {
-                        webix.message({type: 'warning', text: 'Please, add new words only for certain group in dashboard'});
+                        webix.message({type: 'warning', text: `${_('add_words_only_for_group')}`});
                         app.show('top/dashboard');
                     }
                 }
@@ -103,10 +103,10 @@ define([
                         confirmDelete($$('gridDatatable'), _('selected_words_confirm_delete'), deleteRow);
                     }
                     else if (selectedItems === 1) {
-                        confirmDelete($$('gridDatatable'), _('word_confirm_delete'), deleteRow);
+                        confirmDelete($$('gridDatatable'), _('selected_word_confirm_delete'), deleteRow);
                     }
                     else {
-                        webix.message({type: 'warning', text: 'Please, at first select words which you want to delete'});
+                        webix.message({type: 'warning', text: `${_('select_words_to_delete')}`});
                     }
                 }},
             {},
@@ -124,11 +124,11 @@ define([
                             confirmDelete($$('gridDatatable'), _('all_words_confirm_delete'), deleteAllRows, 'confirm-error');
                         }
                         else {
-                            webix.message({type: 'warning', text: 'There are no words to delete in this wordgroup'});
+                            webix.message({type: 'warning', text: `${_('no_words_in_wg_for_delete')}`});
                         }
                     }
                     else {
-                        webix.message({type: 'warning', text: 'Please, at first select wordgroup, which you want to clean'});
+                        webix.message({type: 'warning', text: `${_('select_wg_to_clean')}`});
                     }
                 }
             }

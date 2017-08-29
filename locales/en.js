@@ -45,7 +45,7 @@ define([], () => (
         empty_data: 'There is no data',
         my_profile: 'My profile',
         logout: 'Logout',
-        word_confirm_delete: 'Word will be deleted.<br/> Are you sure?',
+        selected_word_confirm_delete: 'Word will be deleted.<br/> Are you sure?',
         selected_words_confirm_delete: 'Selected words will be deleted.<br/> Are you sure?',
         all_words_confirm_delete: '<strong><span style="color:red;">All words in that word group</span></strong><br/> will be deleted.<br/> Are you sure?',
         yes: 'Yes',
@@ -71,6 +71,11 @@ define([], () => (
         now_generate: 'is genearting now...',
         test_generate_fail: 'Sorry, problems with test generating:',
         select_wordgroup_for_test: 'Please, at first select any wordgroup for testing!',
-        test_header_title: 'Please, provide correct answer'
+        test_header_title: 'Please, provide correct answer',
+        select_wg_before_add: 'Please, select wordgroup if you want to add new word',
+        add_words_only_for_group: 'Please, add new words only for certain group in dashboard',
+        no_words_in_wg_to_delete: 'There are no words to delete in this wordgroup',
+        select_wg_to_clean: 'Please, at first select wordgroup, which you want to clean',
+        select_words_to_delete: 'Please, at first select words which you want to delete'
     }
 ));
