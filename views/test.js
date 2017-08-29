@@ -29,7 +29,7 @@ define([
         if (currentDataItem >= dataForTest.steps.length - 1) {
             $$(toolbarId).disable();
 
-            webix.message(`Nice! Your score is ${score}! Saving your results...`);
+            webix.message(`${_('score_message')} ${score}! ${_('result_saving_message')}`);
 
             let promise = webix.ajax().put('/api/updateTest', {
                 score,
@@ -37,11 +37,10 @@ define([
             });
 
             promise.then((res) => {
-                // console.log(res.json());
-                webix.alert('Cool! Now you can manage your results');
+                webix.alert(`${_('test_passed_message')}`);
                 app.show('top/results');
             }).fail((err) => {
-                webix.message({type: 'warning', text: `Sorry, problems with test generating: ${err}`});
+                webix.message({type: 'warning', text: `${_('test_generating_fail')} ${err}`});
             });
 
             return;
@@ -51,15 +50,15 @@ define([
         if (clickedButton.data.value === dataForTest.steps[currentDataItem].correctAnswer) {
             if (dataForTest.steps[currentDataItem].questionPartOfSpeech === 1 || 2) {
                 score += 2;
-                webix.message('Brilliant! +2 points for correct answer!');
+                webix.message(`${_('mega_correct_answer_message')}`);
             }
             else {
                 score += 1;
-                webix.message('Correct! +1 point for coorect answer!');
+                webix.message(`${_('correct_answer_message')}`);
             }
         }
         else {
-            webix.message('Ooops... Not Correct!');
+            webix.message(`${_('fail_answer_message')}`);
         }
 
         currentDataItem++;
@@ -87,7 +86,7 @@ define([
                             {
                                 view: 'template',
                                 id: 'test:header',
-                                template: 'Please, provide correct answer',
+                                template: `${_('test_header_title')}`,
                                 type: 'header'
                             },
                             {

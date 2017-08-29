@@ -58,6 +58,19 @@ define([], () => (
         test_result_confirm_delete: 'Выделенный результат теста будет удалён.<br/> Вы уверены?',
         test_english: 'Генерировать ENG-RUS тест!',
         test_russian: 'Генерировать RUS-ENG тест!',
-        extended_search: 'Расширенный поиск'
+        extended_search: 'Расширенный поиск',
+        score_message: 'Отлично! Ваш результат:',
+        result_saving_message: 'Сохранение результатов...',
+        test_passed_message: 'Прекрасно! Теперь Вы можете управлять своими результатами',
+        test_generating_fail: 'Простите, ошибка с генерацией теста:',
+        mega_correct_answer_message: 'Восхитительно! +2 балла за супер-слово!',
+        correct_answer_message: 'Правильно! +1 балл за это слово!',
+        fail_answer_message: 'Ой... Неправильно!',
+        add_words_before_test_message: 'Пожалуйста, добавьте слова в группу для генерации теста!',
+        test_for: 'Тест для группы',
+        now_generate: 'генерируется...',
+        test_generate_fail: 'Простите, ошибка с генерацией теста:',
+        select_wordgroup_for_test: 'Пожалуйста, сначала выберите любую группу для тестирования!',
+        test_header_title: 'Пожалуйста, выберите правильный ответ'
     }
 ));

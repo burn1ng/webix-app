@@ -58,6 +58,19 @@ define([], () => (
         test_result_confirm_delete: 'Selected test result will be deleted.<br/> Are you sure?',
         test_english: 'Generate ENG-RUS test!',
         test_russian: 'Generate RUS-ENG test!',
-        extended_search: 'Extended search'
+        extended_search: 'Extended search',
+        score_message: 'Nice! Your result is:',
+        result_saving_message: 'Saving your results...',
+        test_passed_message: 'Cool! Now you can manage your results',
+        test_generating_fail: 'Sorry, problems with test generating:',
+        mega_correct_answer_message: 'Brilliant! +2 points for correct answer!',
+        correct_answer_message_message: 'Correct! +1 point for coorect answer!',
+        fail_answer_message: 'Ooops... Not Correct!',
+        add_words_before_test_message: 'Please, add words in your wordgroup before test generating!',
+        test_for: 'Test for group',
+        now_generate: 'is genearting now...',
+        test_generate_fail: 'Sorry, problems with test generating:',
+        select_wordgroup_for_test: 'Please, at first select any wordgroup for testing!',
+        test_header_title: 'Please, provide correct answer'
     }
 ));

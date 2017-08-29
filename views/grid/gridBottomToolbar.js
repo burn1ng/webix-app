@@ -89,7 +89,7 @@ define([
                     let currentCount = selectedWordGroup.count;
 
                     if (!currentCount) {
-                        webix.message({type: 'warning', text: 'Please, add words in your wordgroup before test generating!'});
+                        webix.message({type: 'warning', text: _('add_words_before_test_message')});
                         return;
                     }
 
@@ -99,7 +99,7 @@ define([
                             done = true;
 
                             $$('gridDatatable').showProgress({type: 'icon', delay: 3000});
-                            webix.message({text: `Test for ${selectedWordGroup.wordGroupName} is genearting now...`});
+                            webix.message({text: `${_('test_for')} "${selectedWordGroup.wordGroupName}" ${_('now_generate')}`});
 
                             let promise = webix.ajax().post('/api/generateTest', {
                                 wordGroupId: selectedWordGroup._id,
@@ -115,13 +115,13 @@ define([
 
                                 app.show('test');
                             }).fail((err) => {
-                                webix.message({type: 'warning', text: `Sorry, problems with test generating: ${err}`});
+                                webix.message({type: 'warning', text: `${_('test_generate_fail')}: ${err}`});
                             });
                         }
                     })();
                 }
                 else {
-                    webix.message({type: 'warning', text: 'Please, at first select any wordgroup for testing!'});
+                    webix.message({type: 'warning', text: `${_('select_wordgroup_for_test')}`});
                 }
             }
 
