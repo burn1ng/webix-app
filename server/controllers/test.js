@@ -89,8 +89,8 @@ module.exports = {
 
                 jsonResponse[i].variants = middleArr;
             }));
-
-            ctx.body = jsonResponse;
+            console.log(typeof JSON.stringify(jsonResponse));
+            ctx.body = JSON.stringify(jsonResponse);
         }
         catch (err) {
             ctx.throw(500, 'Problem with generating random data', {err});

@@ -134,15 +134,14 @@ define([
             //     app.show('top/dashboard');
             // }
 
+            console.log(dataForTest.data.length);
 
-            loadVariants(currentDataItem, 'test:toolbar');
-            loadQuestion(currentDataItem, 'test:question');
-
-
-            // mydata.forEach((item, i, arr) => {
-            //     let testItem = item;
-            //     let question = item.question;
-            // });
+            // dataForTest.data.length
+            while (currentDataItem < mydata.length) {
+                loadVariants(currentDataItem, 'test:toolbar');
+                loadQuestion(currentDataItem, 'test:question');
+            }
+            alert('finish!');
         },
         $ondestroy() {
             dataForTest.data = [];
