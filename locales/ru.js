@@ -50,6 +50,14 @@ define([], () => (
         all_words_confirm_delete: '<strong><span style="color:red;">Все слова в данной группе слов</span></strong><br/> будут удалены.<br/> Вы уверены?',
         yes: 'Да',
         cancel: 'Отмена',
-        wordgroup_header: 'Выберите группу слов'
+        wordgroup_header: 'Выберите группу слов',
+        result_created: 'Дата создания',
+        find_by_date_placeholder: 'Поиск по дате',
+        score: 'Результат',
+        find_score_placeholder: 'Фильтр',
+        test_result_confirm_delete: 'Выделенный результат теста будет удалён.<br/> Вы уверены?',
+        test_english: 'Генерировать ENG-RUS тест!',
+        test_russian: 'Генерировать RUS-ENG тест!',
+        extended_search: 'Расширенный поиск'
     }
 ));

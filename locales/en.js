@@ -50,6 +50,14 @@ define([], () => (
         all_words_confirm_delete: '<strong><span style="color:red;">All words in that word group</span></strong><br/> will be deleted.<br/> Are you sure?',
         yes: 'Yes',
         cancel: 'Cancel',
-        wordgroup_header: 'Choose group of words'
+        wordgroup_header: 'Choose group of words',
+        result_created: 'Date of creation',
+        find_by_date_placeholder: 'Find by date',
+        score: 'Score',
+        find_score_placeholder: 'Find by score',
+        test_result_confirm_delete: 'Selected test result will be deleted.<br/> Are you sure?',
+        test_english: 'Generate ENG-RUS test!',
+        test_russian: 'Generate RUS-ENG test!',
+        extended_search: 'Extended search'
     }
 ));

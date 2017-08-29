@@ -16,10 +16,8 @@ define([
     function loadQuestion(index, templateId) {
         let template = $$(templateId);
         template.refresh();
-        console.log(dataForTest.steps);
         template.config.data.question = `${index + 1}. ${dataForTest.steps[index].question}`;
         template.refresh();
-        // template.render();
     }
 
     function nextQuestion(toolbarId, templateId) {
@@ -39,8 +37,9 @@ define([
             });
 
             promise.then((res) => {
-                console.log(res.json());
-                // app.show('test');
+                // console.log(res.json());
+                webix.alert('Cool! Now you can manage your results');
+                app.show('top/results');
             }).fail((err) => {
                 webix.message({type: 'warning', text: `Sorry, problems with test generating: ${err}`});
             });
@@ -64,7 +63,6 @@ define([
         }
 
         currentDataItem++;
-        console.log(currentDataItem);
         if (currentDataItem < dataForTest.steps.length) {
             nextQuestion(toolbarId, templateId);
         }
@@ -109,8 +107,8 @@ define([
                                         onItemClick(id) {
                                             onButtonClickHandler(
                                                 id,
-                                                this.getParentView().config.id,
-                                                'test:question',
+                                                'test:toolbar',
+                                                'test:question'
                                             );
                                         }
                                     }
@@ -149,14 +147,15 @@ define([
             if (!dataForTest.steps.length) {
                 app.show('top/dashboard');
             }
-
-            loadVariants(currentDataItem, 'test:toolbar');
-            loadQuestion(currentDataItem, 'test:question');
+            else {
+                loadVariants(currentDataItem, 'test:toolbar');
+                loadQuestion(currentDataItem, 'test:question');
+            }
         },
         $ondestroy() {
             dataForTest.steps = [];
             dataForTest._id = 0;
-            console.dir(`ondestroy: ${dataForTest.steps}`);
+            currentDataItem = 0;
         }
 
     };

@@ -1,8 +1,9 @@
-define(() => ({
-    $ui: {
+define([
+    'locale'
+], (_) => {
+    let search = {
         view: 'popup',
         id: 'searchPopup',
-
         width: 300,
         body: {
             rows: [
@@ -10,10 +11,13 @@ define(() => ({
                     view: 'search'
                 },
                 {
-                    borderless: true, css: 'extended_search', template: '<span>Extended search</span>', height: 40
+                    borderless: true, css: 'extended_search', template: `<span>${_('extended_search')}</span>`, height: 40
                 }
             ]
 
         }
-    }
-}));
+    };
+    return {
+        $ui: search
+    };
+});

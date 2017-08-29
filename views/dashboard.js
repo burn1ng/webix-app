@@ -53,9 +53,6 @@ define([
                     url: 'rest->/api/wordgroup',
                     updateFromResponse: true
                 },
-                // ready() {
-                //     this.select(this.getFirstId());
-                // },
                 on: {
                     onItemRender() {
                         this.data.each((wordgroup, i) => {
