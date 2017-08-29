@@ -14,10 +14,7 @@ define([
                 type: 'iconButton',
                 icon: 'trophy',
                 label: _('test_results'),
-                autowidth: true,
-                click() {
-                    // TODO
-                }
+                autowidth: true
             },
             {},
             {
@@ -65,7 +62,7 @@ define([
                 id: 'en_rus_test',
                 type: 'iconButton',
                 icon: 'cog',
-                label: 'Test English words!', // _('test_generate'),
+                label: _('test_english'),
                 autowidth: true
             },
             {
@@ -73,7 +70,7 @@ define([
                 id: 'rus_en_test',
                 type: 'iconButton',
                 icon: 'cog',
-                label: 'Test Russian words!', // _('test_generate'),
+                label: _('test_russian'),
                 autowidth: true
             }
         ]
@@ -87,7 +84,6 @@ define([
             let done;
 
             function generateTestHandler(id) {
-                // $$(id).attachEvent('onItemClick', () => {
                 let selectedWordGroup = $$('wordGroupList:dataview').getSelectedItem();
                 if (selectedWordGroup) {
                     let currentCount = selectedWordGroup.count;
@@ -112,10 +108,11 @@ define([
                             });
 
                             promise.then((response) => {
-                                // console.log(response.json());
                                 response = response.json();
+
                                 dataForTest.steps = response.steps;
                                 dataForTest._id = response._id;
+
                                 app.show('test');
                             }).fail((err) => {
                                 webix.message({type: 'warning', text: `Sorry, problems with test generating: ${err}`});
@@ -126,11 +123,14 @@ define([
                 else {
                     webix.message({type: 'warning', text: 'Please, at first select any wordgroup for testing!'});
                 }
-                // });
             }
 
             $$('en_rus_test').attachEvent('onItemClick', (id) => { generateTestHandler(id); });
             $$('rus_en_test').attachEvent('onItemClick', (id) => { generateTestHandler(id); });
+
+            $$('gridBottomToolbar:testResults').attachEvent('onItemClick', (id) => {
+                app.show('top/results');
+            });
         }
     };
 });

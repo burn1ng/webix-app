@@ -7,6 +7,10 @@ autoIncrement.initialize(connection);
 
 const testSchema = new mongoose.Schema({
     _id: Number,
+    _creator: {
+        type: Number,
+        ref: 'User'
+    },
     _wordGroup: {
         type: Number,
         ref: 'WordGroup'

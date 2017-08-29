@@ -1,4 +1,3 @@
-const WordGroup = require('../models/wordgroups');
 const Word = require('../models/words');
 const Test = require('../models/tests');
 
@@ -22,6 +21,7 @@ module.exports = {
             let newTest = await Test.create(
                 {
                     _wordGroup: wordGroupId,
+                    _creator: ctx.request.user.id,
                     score: 0
                 }
             );
@@ -100,11 +100,17 @@ module.exports = {
             ctx.throw(500, 'Problem with generating random data', {err});
         }
     },
-    async updateTest(ctx) {
-        console.log(ctx.request.body);
-        ctx.status = 200;
+    // READ
+    async getTests(ctx) {
         try {
-            console.log(ctx);
+            ctx.body = await Test.find({_creator: ctx.request.user.id});
+        }
+        catch (err) {
+            ctx.throw(500, 'Sorry, can\'t find test results in database for that user', {err});
+        }
+    },
+    async updateTest(ctx) {
+        try {
             let req = ctx.request.body;
             ctx.body = await Test.findByIdAndUpdate(
                 req._id,
