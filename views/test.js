@@ -3,6 +3,58 @@ define([
     'models/dataForTest',
     'locale'
 ], (app, dataForTest, _) => {
+    let mydata = [
+        {question: 'bird', questionPartOfSpeech: 2, correctAnswer: 'птица', variants: ['расследование', 'птица', 'слон', 'курица']},
+        {question: 'slowly ', questionPartOfSpeech: 4, correctAnswer: 'медленно', variants: ['скоро', 'легко', 'медленно', 'еженедельно']},
+        {question: 'fly', questionPartOfSpeech: 1, correctAnswer: 'лететь', variants: ['лаять', 'бежать', 'лететь', 'плыть']},
+        {question: 'hardly', questionPartOfSpeech: 4, correctAnswer: 'тяжело', variants: ['полностью', 'тяжело', 'медленно', 'теперь, сейчас']},
+        {question: 'or', questionPartOfSpeech: 7, correctAnswer: 'или', variants: ['или', 'и']},
+        {question: 'elephant', questionPartOfSpeech: 2, correctAnswer: 'слон', variants: ['расследование', 'курица', 'тигр', 'слон']},
+        {question: 'easily', questionPartOfSpeech: 4, correctAnswer: 'легко', variants: ['скоро', 'медленно', 'легко', 'теперь, сейчас']},
+        {question: 'weekly', questionPartOfSpeech: 4, correctAnswer: 'еженедельно', variants: ['еженедельно', 'теперь, сейчас', 'скоро', 'медленно']},
+        {question: 'bark', questionPartOfSpeech: 1, correctAnswer: 'лаять', variants: ['бежать', 'лететь', 'сражаться', 'лаять']},
+        {question: 'tiger', questionPartOfSpeech: 2, correctAnswer: 'тигр', variants: ['собака', 'курица', 'тигр', 'птица']}
+    ];
+
+    let score = 0;
+    let currentDataItem = 0;
+
+    function loadVariants(index, toolbarId) {
+        let buttons = $$(toolbarId).elements;
+        for (let i = 0; i < Object.keys(buttons).length; i++) {
+            buttons[i].setValue(`${mydata[index].variants[i] || ''}`);
+            buttons[i].refresh();
+        }
+    }
+    function loadQuestion(index, templateId) {
+        let template = $$(templateId);
+        template.refresh();
+        template.config.data.question = `${index + 1}. ${mydata[index].question}`;
+        template.refresh();
+        // template.render();
+    }
+
+    function onButtonClickHandler(id, toolbarId, templateId) {
+        let clickedButton = $$(id);
+        if (clickedButton.data.value === mydata[currentDataItem].correctAnswer) {
+            if (mydata[currentDataItem].questionPartOfSpeech === 1 || 2) {
+                score += 2;
+                webix.message('Brilliant! +2 points for correct answer!');
+            }
+            else {
+                score += 1;
+                webix.message('Correct! +1 point for coorect answer!');
+            }
+        }
+        else {
+            webix.message('Ooops... Not Correct!');
+        }
+
+        currentDataItem++;
+        loadVariants(currentDataItem, toolbarId);
+        loadQuestion(currentDataItem, templateId);
+    }
+
     let page = {
         rows: [
             {},
@@ -26,42 +78,46 @@ define([
                             },
                             {
                                 id: 'test:question',
-                                css: 'template_question',
-                                name: 'question',
-                                template: '<div><span class="index"></span> <span style="question">#question#</span> ?</div>'
+                                data: mydata[currentDataItem],
+                                template: '<div class="question"><span>#question#</span> ?</div>',
+                                autoheight: true
                             },
                             {
-                                cols: [
+                                view: 'toolbar',
+                                borderless: true,
+                                id: 'test:toolbar',
+                                elementsConfig: {
+                                    view: 'button',
+                                    height: 100,
+                                    on: {
+                                        onItemClick(id) {
+                                            onButtonClickHandler(
+                                                id,
+                                                this.getParentView().config.id,
+                                                'test:question',
+                                            );
+                                        }
+                                    }
+                                },
+                                elements: [
                                     {
-                                        view: 'form',
-                                        borderless: true,
-                                        id: 'test:buttons',
-                                        elementsConfig: {
-                                            view: 'button',
-                                            width: 200
-                                        },
-                                        elements: [
-                                            {
-                                                id: 'button:first',
-                                                name: '0'
-                                            },
-                                            {
-                                                id: 'button:third',
-                                                name: '1'
-                                            },
-                                            {
-                                                id: 'button:second',
-                                                name: '2'
-                                            },
-                                            {
-                                                id: 'button:fourth',
-                                                name: '3'
-                                            }
-                                        ]
+                                        id: 'button:first',
+                                        name: '0'
+                                    },
+                                    {
+                                        id: 'button:second',
+                                        name: '1'
+                                    },
+                                    {
+                                        id: 'button:third',
+                                        name: '2'
+                                    },
+                                    {
+                                        id: 'button:fourth',
+                                        name: '3'
                                     }
                                 ]
                             }
-
                         ]
                     },
                     {}
@@ -77,55 +133,10 @@ define([
             // if (!dataForTest.data.length) {
             //     app.show('top/dashboard');
             // }
-            let mydata = [
-                {question: 'and', correctAnswer: 'и', variants: ['или', 'и']},
-                {question: 'bird', correctAnswer: 'птица', variants: ['птица', 'собака', 'тигр', 'слон']},
-                {question: 'struggle', correctAnswer: 'сражаться', variants: ['плыть', 'лететь', 'бежать', 'сражаться']},
-                {question: 'run', correctAnswer: 'бежать', variants: ['лететь', 'сражаться', 'бежать', 'лаять']},
-                {question: 'swim', correctAnswer: 'плыть', variants: ['бежать', 'лететь', 'сражаться', 'плыть']},
-                {question: 'bark', correctAnswer: 'лаять', variants: ['плыть', 'бежать', 'лететь', 'лаять']},
-                {question: 'elephant', correctAnswer: 'слон', variants: ['собака', 'слон', 'курица', 'тигр']},
-                {question: 'tiger', correctAnswer: 'тигр', variants: ['собака', 'тигр', 'курица', 'слон']},
-                {question: 'or', correctAnswer: 'или', variants: ['и', 'или']},
-                {question: 'fly', correctAnswer: 'лететь', variants: ['сражаться', 'лететь', 'лаять', 'плыть']}
-            ];
-
-            function loadVariants(index) {
-                let buttons = $$('test:buttons').elements;
-                for (let i = 0; i < Object.keys(buttons).length; i++) {
-                    buttons[i].setValue(mydata[index].variants[i]);
-                    buttons[i].refresh();
-                }
-            }
-
-            function loadQuestion(index) {
-                let form = $$('test:form');
-                form.data = mydata[index];
-
-                $$('test:form').refresh();
-
-                console.log(form);
-            }
-
-            let currentItem = 0;
-            loadVariants(currentItem);
-            loadQuestion(currentItem);
-
-            // $$('test:buttons').setValues({
-            //     value0: mydata[0].variants[0],
-            //     value1: mydata[0].variants[1],
-            //     value2: mydata[0].variants[2],
-            //     value3: mydata[0].variants[3]
-            // });
 
 
-            // console.log($$('test:form').getValues());
-
-
-            // $$('button:first').setValue(mydata[0].variants[0]);
-            // $$('button:second').setValue(mydata[0].variants[1]);
-            // $$('button:third').setValue(mydata[0].variants[2]);
-            // $$('button:fourth').setValue(mydata[0].variants[3]);
+            loadVariants(currentDataItem, 'test:toolbar');
+            loadQuestion(currentDataItem, 'test:question');
 
 
             // mydata.forEach((item, i, arr) => {

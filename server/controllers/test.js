@@ -57,6 +57,7 @@ module.exports = {
 
                 jsonResponse[i] = {
                     question: quest,
+                    questionPartOfSpeech: randomQuestion.partOfSpeech,
                     correctAnswer: ans
                 };
 
